@@ -70,6 +70,7 @@ function ui_boost_posthook_remap_colors() {
 	# check if specifc language strings file exist and it's coherence
 	if [ -e "${scriptfolder}language_strings_${language}.sh" ]; then
 		unset language_strings_version
+		unset set_language_strings_version
 		source "${scriptfolder}language_strings_${language}.sh"
 		set_language_strings_version
 		if [ "${language_strings_version}" != "${language_strings_expected_version}" ]; then
