@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.0.3
+# Version:    0.0.4
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -26,7 +26,8 @@ plugin_distros_supported=("*")
 function make_specifc_language_strings() {
 
 	# languages supported by airgeddon
-	languages="ENGLISH SPANISH FRENCH CATALAN PORTUGUESE RUSSIAN GREEK ITALIAN POLISH GERMAN TURKISH"
+	languages="$(cat "${scriptfolder}${language_strings_file}" | grep "]=" | awk -F'"' '{print $2}' | awk -F'"' '{print $1}' | sort | uniq | awk '{print}' ORS=' ')"
+	#languages="ENGLISH SPANISH FRENCH CATALAN PORTUGUESE RUSSIAN GREEK ITALIAN POLISH GERMAN TURKISH"
 
 	# detect languages to be excluded
 	for language_to_exclude in $languages; do
@@ -42,8 +43,8 @@ function make_specifc_language_strings() {
 	done
 	
 	# make specifc language strings file
-	touch ${scriptfolder}/language_strings_${language}.sh
-	cat ${scriptfolder}/language_strings.sh | grep -Ev "$languages_to_exclude" > ${scriptfolder}/language_strings_${language}.sh
+	touch "${scriptfolder}"language_strings_${language}.sh
+	cat "${scriptfolder}${language_strings_file}" | grep -Ev "$languages_to_exclude" > ${scriptfolder}language_strings_${language}.sh
 	
 	# setting new language_strings_file variable
 	language_strings_file="language_strings_${language}.sh"
@@ -67,9 +68,9 @@ function ui_boost_posthook_remap_colors() {
 	fi
 
 	# check if specifc language strings file exist and it's coherence
-	if [ -e "${scriptfolder}/language_strings_${language}.sh" ]; then
+	if [ -e "${scriptfolder}language_strings_${language}.sh" ]; then
 		unset language_strings_version
-		source "${scriptfolder}/language_strings_${language}.sh"
+		source "${scriptfolder}language_strings_${language}.sh"
 		set_language_strings_version
 		if [ "${language_strings_version}" != "${language_strings_expected_version}" ]; then
 			make_specifc_language_strings
