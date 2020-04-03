@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.0.2
+# Version:    0.0.3
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -68,6 +68,7 @@ function ui_boost_posthook_remap_colors() {
 
 	# check if specifc language strings file exist and it's coherence
 	if [ -e "${scriptfolder}/language_strings_${language}.sh" ]; then
+		unset language_strings_version
 		source "${scriptfolder}/language_strings_${language}.sh"
 		set_language_strings_version
 		if [ "${language_strings_version}" != "${language_strings_expected_version}" ]; then
