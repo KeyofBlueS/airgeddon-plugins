@@ -68,7 +68,7 @@ function check_specifc_language_strings() {
 	fi
 }
 
-#Posthook to check if specifc language strings file exist and it's coherence
+#Posthook to store some variables
 function ui_boost_posthook_remap_colors() {
 
 	# store current language
