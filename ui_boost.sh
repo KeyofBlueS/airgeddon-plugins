@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.1.0
+# Version:    0.1.1
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -29,7 +29,7 @@ function make_specifc_language_strings() {
 	if [ -n "${languages_to_exclude}" ]; then
 		unset languages_to_exclude
 	fi
-	for language_to_exclude in ${languages}; do
+	for language_to_exclude in "${lang_association[@]}"; do
 		if [ "${language_to_exclude}" = "${language}" ]; then
 			true
 		else
@@ -75,9 +75,6 @@ function ui_boost_posthook_remap_colors() {
 	language_current="${language}"
 	# store language_strings_file
 	language_strings_file_complete="${language_strings_file}"	
-	# languages supported by airgeddon
-	languages="$(cat "${scriptfolder}${language_strings_file_complete}" | grep "]=" | awk -F'"' '{print $2}' | awk -F'"' '{print $1}' | sort | uniq | awk '{print}' ORS=' ')"
-	#languages="ENGLISH SPANISH FRENCH CATALAN PORTUGUESE RUSSIAN GREEK ITALIAN POLISH GERMAN TURKISH"
 	check_specifc_language_strings
 }
 
