@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.1.3
+# Version:    0.1.4
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -141,5 +141,13 @@ function ui_boost_prehook_capture_traps() {
 	if [ "${current_menu}" = "language_menu" ]; then
 		unset language_strings_version
 		source "${scriptfolder}${language_strings_file_complete}"
+	fi
+}
+
+#Posthook to restore specifc language strings if user choose to not terminate the script anymore
+function ui_boost_posthook_capture_traps() {
+
+	if [ "${current_menu}" = "language_menu" ]; then
+		check_specifc_language_strings
 	fi
 }
