@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.1.1
+# Version:    0.1.2
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -30,9 +30,7 @@ function make_specifc_language_strings() {
 		unset languages_to_exclude
 	fi
 	for language_to_exclude in "${lang_association[@]}"; do
-		if [ "${language_to_exclude}" = "${language}" ]; then
-			true
-		else
+		if [ "${language_to_exclude}" != "${language}" ]; then
 			if [ -z "${languages_to_exclude}" ]; then
 				languages_to_exclude="${language_to_exclude}"
 			else
@@ -40,11 +38,11 @@ function make_specifc_language_strings() {
 			fi
 		fi
 	done
-	
+
 	# make specifc language strings file
 	touch "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh && chmod +x "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh
-	cat "${scriptfolder}${language_strings_file_complete}" | grep -Ev "${languages_to_exclude}" > "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh
-	
+	cat "${scriptfolder}${language_strings_file_complete}" | grep -Ev "\[\"(${languages_to_exclude})\"\,?[[:digit:]]*\]=" > "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh
+
 	# setting new language_strings_file variable
 	language_strings_file="${language_strings_file_complete%.*}"_"${language}".sh
 	source "${scriptfolder}${language_strings_file}"
@@ -74,7 +72,7 @@ function ui_boost_posthook_remap_colors() {
 	# store current language
 	language_current="${language}"
 	# store language_strings_file
-	language_strings_file_complete="${language_strings_file}"	
+	language_strings_file_complete="${language_strings_file}"
 	check_specifc_language_strings
 }
 
@@ -93,7 +91,7 @@ function ui_boost_prehook_language_menu() {
 	arr["POLISH",83]="Zmieniono język na Polski"
 	arr["GERMAN",83]="Sprache wurde auf Deutsch geändert"
 	arr["TURKISH",83]="Dil Türkçe olarak değiştirildi"
-	
+
 	arr["ENGLISH",115]="Press [Enter] key to continue..."
 	arr["SPANISH",115]="Pulsa la tecla [Enter] para continuar..."
 	arr["FRENCH",115]="Pressez [Enter] pour continuer..."
@@ -117,7 +115,7 @@ function ui_boost_prehook_language_menu() {
 	arr["POLISH",251]="Wybrałeś ten sam język, który jest używany. Żadne zmiany nie zostaną wprowadzone"
 	arr["GERMAN",251]="Sie haben die selbe Sprache ausgewählt. Es werden keine Änderungen vorgenommen"
 	arr["TURKISH",251]="Seçilmiş olan dili seçtiniz. Hiçbir değişiklik yapılmayacak"
-	
+
 	if [ "${language_current}" != "${language}" ]; then
 		check_specifc_language_strings
 	fi
