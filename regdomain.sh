@@ -24,7 +24,7 @@ plugin_distros_supported=("*")
 
 #Set the country code
 #Example:
-#regulatory_domain=BZ
+regulatory_domain=BZ
 
 #Custom function to set regulatory domain
 function set_regulatory_domain() {
@@ -65,19 +65,19 @@ function set_regulatory_domain() {
 }
 
 #Prehook to set regulatory domain when setting interface in monitor mode
-function regulatory_domain_prehook_monitor_option() {
+function regdomain_prehook_monitor_option() {
 
 	set_regulatory_domain
 }
 
 #Prehook to set regulatory domain when setting interface in managed mode
-function regulatory_domain_prehook_managed_option() {
+function regdomain_prehook_managed_option() {
 
 	set_regulatory_domain
 }
 
 #Override to try to set txpower to 30.00 dBm
-function regulatory_domain_override_set_mode_without_airmon() {
+function regdomain_override_set_mode_without_airmon() {
 
 	debug_print
 
@@ -85,7 +85,7 @@ function regulatory_domain_override_set_mode_without_airmon() {
 	local mode
 
 	ip link set "${1}" down > /dev/null 2>&1
-	
+
 	iw dev "${1}" set txpower fixed 30mBm > /dev/null 2>&1
 
 	if [ "${2}" = "monitor" ]; then
