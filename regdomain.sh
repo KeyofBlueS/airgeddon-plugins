@@ -22,6 +22,7 @@ plugin_minimum_ag_affected_version="10.0"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
+#You can check the country codes database i.e. here https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb.git/tree/db.txt
 #Set the country code
 #Example:
 regulatory_domain=BZ
