@@ -7,10 +7,10 @@ Plugins for airgeddon https://github.com/v1s1t0r1sh3r3/airgeddon
 
 ### DESCRIPTION
 
-- UI-Boost
+- UI-Boost:
 Speed up user interface by making a specifc language strings file (Soon deprecated as slowness will be fixed directly in airgeddon next release).
 
-- Regdomain
+- Regdomain:
 Set regulatory domain to affect the availability of wireless channels and txpower.
 You can check the country codes database i.e. here https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb.git/tree/db.txt
 
