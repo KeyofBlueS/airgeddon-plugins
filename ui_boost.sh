@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.1.5
+# Version:    0.1.6
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -19,7 +19,7 @@ plugin_author="KeyofBlueS"
 plugin_enabled=1
 
 plugin_minimum_ag_affected_version="10.0"
-plugin_maximum_ag_affected_version="10.11"
+plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
 #Enabled 1 / Disabled 0 - Use hardcoded language menu strings when in language_menu - Default value 0
