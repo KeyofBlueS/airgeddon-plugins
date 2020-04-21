@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.1.6
+# Version:    0.1.7
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -45,7 +45,7 @@ function make_specifc_language_strings() {
 	done
 
 	# make specifc language strings file
-	touch "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh && chmod +x "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh
+	touch "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh && chmod +x "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh > /dev/null 2>&1
 	cat "${scriptfolder}${language_strings_file_complete}" | grep -Ev "\[\"(${languages_to_exclude})\"\,?[[:digit:]]*\]=" > "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh
 
 	# setting new language_strings_file variable
@@ -59,8 +59,6 @@ function make_specifc_language_strings() {
 function check_specifc_language_strings() {
 
 	if [ -e "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh ]; then
-		unset language_strings_version
-		unset set_language_strings_version
 		source "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh
 		set_language_strings_version
 		if [ "${language_strings_version}" != "${language_strings_expected_version}" ]; then
@@ -84,6 +82,22 @@ function ui_boost_posthook_remap_colors() {
 	# store language_strings_file
 	language_strings_file_complete="${language_strings_file}"
 	check_specifc_language_strings
+}
+
+#Posthook to let user change language in captive portal page
+function ui_boost_posthook_set_captive_portal_language() {
+
+	if [ "${captive_portal_language}" != "${language}" ]; then
+		source "${scriptfolder}${language_strings_file_complete}"
+	fi
+}
+
+#Prehook to let user change language in captive portal page
+function ui_boost_prehook_exec_et_captive_portal_attack() {
+
+	if [ "${captive_portal_language}" != "${language}" ]; then
+		check_specifc_language_strings
+	fi
 }
 
 #Prehook to let user change language in options menu
@@ -128,13 +142,18 @@ function ui_boost_prehook_language_menu() {
 		arr["GERMAN",251]="Sie haben die selbe Sprache ausgewählt. Es werden keine Änderungen vorgenommen"
 		arr["TURKISH",251]="Seçilmiş olan dili seçtiniz. Hiçbir değişiklik yapılmayacak"
 	else
-		unset language_strings_version
 		source "${scriptfolder}${language_strings_file_complete}"
 	fi
 
 	if [ "${language_current}" != "${language}" ]; then
 		check_specifc_language_strings
 	fi
+}
+
+#Posthook to let user change language in options menu
+function ui_boost_posthook_language_menu() {
+
+	check_specifc_language_strings
 }
 
 #Prehook to restore complete language strings when an interruption is
@@ -144,7 +163,6 @@ function ui_boost_prehook_language_menu() {
 function ui_boost_prehook_capture_traps() {
 
 	if [ "${current_menu}" = "language_menu" ]; then
-		unset language_strings_version
 		source "${scriptfolder}${language_strings_file_complete}"
 	fi
 }
