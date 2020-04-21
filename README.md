@@ -8,7 +8,8 @@ Plugins for airgeddon https://github.com/v1s1t0r1sh3r3/airgeddon
 ### DESCRIPTION
 
 - UI-Boost:
-Speed up user interface by making a specifc language strings file (Soon deprecated as slowness will be fixed directly in airgeddon next release).
+Speed up user interface by making a specifc language strings file.
+Even if slowness will be fixed directly in airgeddon 10.20, this plugin can decrease ram consumption, useful in devices with limited ram memory.
 
 - Regdomain:
 Set regulatory domain to affect the availability of wireless channels and txpower.
