@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.0.1
+# Version:    0.0.2
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -24,7 +24,9 @@ plugin_distros_supported=("*")
 
 
 # Put Your custom captive portal files in plugins/custom_portals/PORTAL_FOLDER/PORTAL_FILES
-# You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon itself
+# You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon itself.
+# Including ESSID_HERE in the body of Your custom index file, will be replaced with the
+# essid of the target network.
 
 custom_portals_dir="custom_portals/"
 
@@ -143,9 +145,8 @@ function custom_portals_override_set_captive_portal_page() {
 		echo -e "echo '</html>'"
 		echo -e "exit 0"
 		} >> "${tmpdir}${webdir}${indexfile}"
-	#elif echo "${tmpdir}${webdir}${indexfile}" | grep -q "ESSID_HERE"; then
-		#sed "s/ESSID_HERE/${essid//[\`\']/}/" < "${tmpdir}${webdir}${indexfile}" > "${tmpdir}${webdir}${indexfile}".tmp
-		#mv "${tmpdir}${webdir}${indexfile}".tmp "${tmpdir}${webdir}${indexfile}"
+	elif cat "${tmpdir}${webdir}${indexfile}" | grep -q "ESSID_HERE"; then
+		sed -i "s/ESSID_HERE/${essid//[\`\']/}/g" "${tmpdir}${webdir}${indexfile}"
 	fi
 
 	exec 4>"${tmpdir}${webdir}${checkfile}"
