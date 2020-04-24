@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.0.2
+# Version:    0.0.3
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -251,54 +251,57 @@ function custom_portals_prehook_set_captive_portal_language() {
 
 	debug_print
 
-	clear
-	language_strings "${language}" 293 "title"
-	print_iface_selected
-	print_et_target_vars
-	print_iface_internet_selected
-	echo
-	language_strings "${language}" 318 "green"
-	print_simple_separator
-	language_strings "${language}" 266
-	print_simple_separator
+	while true; do
+		clear
+		language_strings "${language}" 293 "title"
+		print_iface_selected
+		print_et_target_vars
+		print_iface_internet_selected
+		echo
+		language_strings "${language}" 318 "green"
+		print_simple_separator
 
-	ls -d1 -- "${scriptfolder}${plugins_dir}${custom_portals_dir}"*/ | rev | awk -F'/' '{print $2}' | rev | sort > "${tmpdir}ag.custom_portals.txt"
-	local i=0
-	while IFS=, read -r exp_folder; do
+		echo "Standard" > "${tmpdir}ag.custom_portals.txt"
+		ls -d1 -- "${scriptfolder}${plugins_dir}${custom_portals_dir}"*/ 2>/dev/null | rev | awk -F'/' '{print $2}' | rev | sort >> "${tmpdir}ag.custom_portals.txt"
+		local i=0
+		while IFS=, read -r exp_folder; do
 
-		i=$((i + 1))
+			i=$((i + 1))
 
-		if [ ${i} -le 9 ]; then
-			sp1=" "
-		else
-			sp1=""
+			if [ ${i} -le 9 ]; then
+				sp1=" "
+			else
+				sp1=""
+			fi
+
+			portal=${exp_folder}
+			echo -e "${sp1}${i}) ${portal}"
+		done < "${tmpdir}ag.custom_portals.txt"
+
+		unset selected_custom_portal
+		echo
+		cat "${tmpdir}ag.custom_portals.txt" | grep -Exvq "Standard$"
+		if [[ "${?}" != 0 ]]; then
+			echo_yellow "No custom captive portals found!"
+			echo_brown "Please put Your custom captive portal files in:"
+			echo_brown "${scriptfolder}${plugins_dir}${custom_portals_dir}PORTAL_FOLDER/PORTAL_FILES"
 		fi
-
-		portal=${exp_folder}
-		echo -e "${sp1}${i}) ${portal}"
-	done < "${tmpdir}ag.custom_portals.txt"
-
-	unset selected_custom_portal
-	echo
-	if [[ ! -s "${tmpdir}ag.custom_portals.txt" ]]; then
-		echo_yellow "No custom captive portals found! We will use the standard one."
-		echo_brown "Please put Your custom captive portal files in:"
-		echo_brown "${scriptfolder}${plugins_dir}${custom_portals_dir}PORTAL_FOLDER/PORTAL_FILES"
-		language_strings "${language}" 115 "read"
-	else
 		read -rp "> " selected_custom_portal
-		if [[ ! "${selected_custom_portal}" =~ ^[[:digit:]]+$ ]] || [[ "${selected_custom_portal}" -gt "${i}" ]]; then
-			invalid_captive_portal_language_selected
-		fi
-		
-		if [[ "${selected_custom_portal}" -eq 0 ]]; then
-			return_to_et_main_menu=1
-			return 1
+		if [[ ! "${selected_custom_portal}" =~ ^[[:digit:]]+$ ]] || [[ "${selected_custom_portal}" -gt "${i}" ]] || [[ "${selected_custom_portal}" -lt 1 ]]; then
+			echo
+			echo_red "Invalid captive portal was chosen"
+			language_strings "${language}" 115 "read"
 		else
-			custom_portal="$(sed -n "${selected_custom_portal}"p "${tmpdir}ag.custom_portals.txt")"
-			rm "${tmpdir}custom_portals.txt"
-			copy_custom_portal=1
-			echo_green "${custom_portal}"
+			break
 		fi
+	done
+	if [[ "${selected_custom_portal}" -eq 1 ]]; then
+		copy_custom_portal=0
+	else
+		copy_custom_portal=1
 	fi
+	custom_portal="$(sed -n "${selected_custom_portal}"p "${tmpdir}ag.custom_portals.txt")"
+	rm "${tmpdir}ag.custom_portals.txt"
+	echo_yellow "Captive portal choosen: ${custom_portal}"
+	language_strings "${language}" 115 "read"
 }
