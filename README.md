@@ -20,7 +20,7 @@ Put Your custom captive portal files in plugins/custom_portals/PORTAL_FOLDER/POR
 You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon itself.
 
 - Captured-Handshakes:
-Put Your captured handshakes files in plugins/captured_handshakes/HANDSHAKES
+Put Your captured handshakes files in plugins/captured_handshakes/HANDSHAKES_FILES
 then choose one of them inside airgeddon itself.
 TODO: List in Offline WPA/WPA2 decrypt
 
