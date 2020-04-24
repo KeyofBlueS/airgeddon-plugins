@@ -59,6 +59,7 @@ function list_captured_handshakes_files() {
 
 			airodump_color="${normal_color}"
 			likely_tip="0"
+			unset likely
 			if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]]; then
 				if ! echo "${exp_handshake}" | grep -q "Manually enter the path of the captured handshake file"; then
 					if cat "${scriptfolder}${plugins_dir}${captured_handshakes_dir}${exp_handshake}" | grep -Fq "${essid}" > /dev/null 2>&1 || echo "${exp_handshake}" | grep -q "${bssid}"; then
