@@ -23,7 +23,7 @@ plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
 
-# Put Your custom captive portal files in plugins/captured_handshakes/HANDSHAKES
+# Put Your captured handshakes files in plugins/captured_handshakes/HANDSHAKES
 # then choose one of them inside airgeddon itself.
 # TODO: List in Offline WPA/WPA2 decrypt
 
