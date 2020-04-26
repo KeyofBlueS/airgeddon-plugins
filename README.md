@@ -30,3 +30,10 @@ bssid, channel, power, essid, encryption, default
 ### INSTALL
 Simply put the .sh file of your choice in airgeddon's plugins folder.
 For more detailed instructions, please refer to airgeddon's documentations here https://github.com/v1s1t0r1sh3r3/airgeddon/wiki/Plugins%20System
+
+### DONATIONS
+If You enjoyed my work and found it useful, You can support the project by making a donation through Paypal. Any amount, not matter how small (1, 2, 5 $/€) is welcome.
+https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EFJW5YSFSLGRU&source=url
+
+and don't forget airgeddon too!
+https://github.com/v1s1t0r1sh3r3/airgeddon/wiki/Contributing-&-Code-of-Conduct
