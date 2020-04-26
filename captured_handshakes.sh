@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.0.1
+# Version:    0.0.2
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -23,9 +23,8 @@ plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
 
-# Put Your captured handshakes files in plugins/captured_handshakes/HANDSHAKES_FILES
+# Put Your captured handshakes files in plugins/captured_handshakes/HANDSHAKES
 # then choose one of them inside airgeddon itself.
-# TODO: List in Offline WPA/WPA2 decrypt
 
 captured_handshakes_dir="captured_handshakes/"
 
@@ -36,10 +35,16 @@ function list_captured_handshakes_files() {
 
 	while true; do
 		clear
-		language_strings "${language}" 293 "title"
-		print_iface_selected
-		print_et_target_vars
-		print_iface_internet_selected
+		if [ "${current_menu}" = "handshake_pmkid_tools_menu" ]; then
+			language_strings "${language}" 120 "title"
+		elif [ "${current_menu}" = "decrypt_menu" ]; then
+			language_strings "${language}" 170 "title"
+		elif [ "${current_menu}" = "evil_twin_attacks_menu" ]; then
+			language_strings "${language}" 293 "title"
+			print_iface_selected
+			print_et_target_vars
+			print_iface_internet_selected
+		fi
 		echo
 		language_strings "${language}" 154 "green"
 		print_simple_separator
@@ -57,21 +62,21 @@ function list_captured_handshakes_files() {
 				sp1=""
 			fi
 
-			airodump_color="${normal_color}"
+			handshake_color="${normal_color}"
 			likely_tip="0"
 			unset likely
 			if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]]; then
 				if ! echo "${exp_handshake}" | grep -q "Manually enter the path of the captured handshake file"; then
 					if cat "${scriptfolder}${plugins_dir}${captured_handshakes_dir}${exp_handshake}" | grep -Fq "${essid}" > /dev/null 2>&1 || echo "${exp_handshake}" | grep -q "${bssid}"; then
 						likely_tip="1"
-						airodump_color="${yellow_color}"
+						handshake_color="${yellow_color}"
 						likely="*"
 					fi
 				fi
 			fi
 
 			handshake=${exp_handshake}
-			echo -e "${airodump_color} ${echo_color} ${sp1}${i}) ${handshake} ${likely}"  
+			echo -e "${handshake_color} ${sp1}${i}) ${handshake} ${likely}"  
 		done < "${tmpdir}ag.captured_handshakes.txt"
 
 		unset selected_captured_handshake
@@ -119,6 +124,20 @@ function captured_handshakes_prehook_ask_et_handshake_file() {
 function captured_handshakes_prehook_clean_handshake_file_option() {
 
 	list_captured_handshakes_files
+}
+
+#Personal captured handshakes decrypt selection menu
+function captured_handshakes_prehook_personal_decrypt_menu() {
+	if [ "${current_menu}" = "decrypt_menu" ]; then
+		list_captured_handshakes_files
+	fi
+}
+
+#Enterprise captured handshakes decrypt selection menu
+function captured_handshakes_prehook_enterprise_decrypt_menu() {
+	if [ "${current_menu}" = "decrypt_menu" ]; then
+		list_captured_handshakes_files
+	fi
 }
 
 #Set default save path to captured_handshakes_dir
