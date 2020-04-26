@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.1.7
+# Version:    0.1.8
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -35,7 +35,7 @@ function make_specifc_language_strings() {
 		unset languages_to_exclude
 	fi
 	for language_to_exclude in "${lang_association[@]}"; do
-		if [ "${language_to_exclude}" != "${language}" ]; then
+		if [ "${language_to_exclude}" != "${language_to_make}" ]; then
 			if [ -z "${languages_to_exclude}" ]; then
 				languages_to_exclude="${language_to_exclude}"
 			else
@@ -45,11 +45,11 @@ function make_specifc_language_strings() {
 	done
 
 	# make specifc language strings file
-	touch "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh && chmod +x "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh > /dev/null 2>&1
-	cat "${scriptfolder}${language_strings_file_complete}" | grep -Ev "\[\"(${languages_to_exclude})\"\,?[[:digit:]]*\]=" > "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh
+	touch "${scriptfolder}${language_strings_file_complete%.*}"_"${language_to_make}".sh && chmod +x "${scriptfolder}${language_strings_file_complete%.*}"_"${language_to_make}".sh > /dev/null 2>&1
+	cat "${scriptfolder}${language_strings_file_complete}" | grep -Ev "\[\"(${languages_to_exclude})\"\,?[[:digit:]]*\]=" > "${scriptfolder}${language_strings_file_complete%.*}"_"${language_to_make}".sh
 
 	# setting new language_strings_file variable
-	language_strings_file="${language_strings_file_complete%.*}"_"${language}".sh
+	language_strings_file="${language_strings_file_complete%.*}"_"${language_to_make}".sh
 	source "${scriptfolder}${language_strings_file}"
 	# update current language
 	language_current="${language}"
@@ -58,14 +58,15 @@ function make_specifc_language_strings() {
 #Custom function to check if specifc language strings file exist and it's coherence
 function check_specifc_language_strings() {
 
-	if [ -e "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh ]; then
-		source "${scriptfolder}${language_strings_file_complete%.*}"_"${language}".sh
+	language_to_make="${1}"
+	if [ -e "${scriptfolder}${language_strings_file_complete%.*}"_"${language_to_make}".sh ]; then
+		source "${scriptfolder}${language_strings_file_complete%.*}"_"${language_to_make}".sh
 		set_language_strings_version
 		if [ "${language_strings_version}" != "${language_strings_expected_version}" ]; then
 			make_specifc_language_strings
 		fi
 		# setting new language_strings_file variable
-		language_strings_file="${language_strings_file_complete%.*}"_"${language}".sh
+		language_strings_file="${language_strings_file_complete%.*}"_"${language_to_make}".sh
 		source "${scriptfolder}${language_strings_file}"
 		# update current language
 		language_current="${language}"
@@ -81,22 +82,23 @@ function ui_boost_posthook_remap_colors() {
 	language_current="${language}"
 	# store language_strings_file
 	language_strings_file_complete="${language_strings_file}"
-	check_specifc_language_strings
-}
-
-#Posthook to let user change language in captive portal page
-function ui_boost_posthook_set_captive_portal_language() {
-
-	if [ "${captive_portal_language}" != "${language}" ]; then
-		source "${scriptfolder}${language_strings_file_complete}"
-	fi
+	check_specifc_language_strings "${language}"
 }
 
 #Prehook to let user change language in captive portal page
-function ui_boost_prehook_exec_et_captive_portal_attack() {
+function ui_boost_prehook_set_captive_portal_page() {
+
+		if [ "${captive_portal_language}" != "${language}" ]; then
+			check_specifc_language_strings "${captive_portal_language}"
+			#source "${scriptfolder}${language_strings_file_complete}"
+		fi
+}
+
+#Posthook to let user change language in captive portal page
+function ui_boost_posthook_set_captive_portal_page() {
 
 	if [ "${captive_portal_language}" != "${language}" ]; then
-		check_specifc_language_strings
+		check_specifc_language_strings "${language}"
 	fi
 }
 
@@ -146,14 +148,14 @@ function ui_boost_prehook_language_menu() {
 	fi
 
 	if [ "${language_current}" != "${language}" ]; then
-		check_specifc_language_strings
+		check_specifc_language_strings "${language}"
 	fi
 }
 
 #Posthook to let user change language in options menu
 function ui_boost_posthook_language_menu() {
 
-	check_specifc_language_strings
+	check_specifc_language_strings "${language}"
 }
 
 #Prehook to restore complete language strings when an interruption is
@@ -171,6 +173,6 @@ function ui_boost_prehook_capture_traps() {
 function ui_boost_posthook_capture_traps() {
 
 	if [ "${current_menu}" = "language_menu" ]; then
-		check_specifc_language_strings
+		check_specifc_language_strings "${language}"
 	fi
 }
