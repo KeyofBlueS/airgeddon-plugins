@@ -23,6 +23,10 @@ You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon it
 Put Your captured handshakes files in plugins/captured_handshakes/HANDSHAKES_FILES
 then choose one of them inside airgeddon itself.
 
+- Sort-Targets:
+When selecting targets, sort them by one of the following value:
+bssid, channel, power, essid, encryption, default
+
 ### INSTALL
 Simply put the .sh file of your choice in airgeddon's plugins folder.
 For more detailed instructions, please refer to airgeddon's documentations here https://github.com/v1s1t0r1sh3r3/airgeddon/wiki/Plugins%20System
