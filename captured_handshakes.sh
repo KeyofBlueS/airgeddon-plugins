@@ -34,6 +34,7 @@ function list_captured_handshakes_files() {
 	debug_print
 
 	manual_handshakes_text="$(echo "${arr[${language},captured_handshakes_text_1]}")"
+	likely_tip="0"
 	while true; do
 		clear
 		if [ "${current_menu}" = "handshake_pmkid_tools_menu" ]; then
@@ -64,7 +65,6 @@ function list_captured_handshakes_files() {
 			fi
 
 			handshake_color="${normal_color}"
-			likely_tip="0"
 			unset likely
 			
 			if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]]; then
@@ -85,7 +85,7 @@ function list_captured_handshakes_files() {
 		echo
 		if [ ${likely_tip} -eq 1 ]; then
 			language_strings "${language}" "captured_handshakes_text_2" "yellow"
-			unset likely_tip
+			likely_tip="0"
 		fi
 		if ! cat "${tmpdir}ag.captured_handshakes.txt" | grep -Exvq "${manual_handshakes_text}$"; then
 			language_strings "${language}" "captured_handshakes_text_3" "yellow"
