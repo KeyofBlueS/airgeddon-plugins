@@ -12,7 +12,7 @@
 #Global shellcheck disabled warnings
 #shellcheck disable=SC2034,SC2154
 
-regdomain="Regdomain"
+plugin_name="Regdomain"
 plugin_description="Set regulatory domain to affect the availability of wireless channels and txpower"
 plugin_author="KeyofBlueS"
 
