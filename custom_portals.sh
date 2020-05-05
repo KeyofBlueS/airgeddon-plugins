@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.0.3
+# Version:    0.0.4
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -18,7 +18,7 @@ plugin_author="KeyofBlueS"
 
 plugin_enabled=1
 
-plugin_minimum_ag_affected_version="10.0"
+plugin_minimum_ag_affected_version="10.20"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
@@ -251,6 +251,7 @@ function custom_portals_prehook_set_captive_portal_language() {
 
 	debug_print
 
+	standard_portal_text="$(echo "${arr[${language},custom_portals_text_1]}")"
 	while true; do
 		clear
 		language_strings "${language}" 293 "title"
@@ -258,10 +259,10 @@ function custom_portals_prehook_set_captive_portal_language() {
 		print_et_target_vars
 		print_iface_internet_selected
 		echo
-		language_strings "${language}" 318 "green"
+		language_strings "${language}" "custom_portals_text_0" "green"
 		print_simple_separator
 
-		echo "Standard" > "${tmpdir}ag.custom_portals.txt"
+		echo "${standard_portal_text}" > "${tmpdir}ag.custom_portals.txt"
 		ls -d1 -- "${scriptfolder}${plugins_dir}${custom_portals_dir}"*/ 2>/dev/null | rev | awk -F'/' '{print $2}' | rev | sort >> "${tmpdir}ag.custom_portals.txt"
 		local i=0
 		while IFS=, read -r exp_folder; do
@@ -280,16 +281,15 @@ function custom_portals_prehook_set_captive_portal_language() {
 
 		unset selected_custom_portal
 		echo
-		cat "${tmpdir}ag.custom_portals.txt" | grep -Exvq "Standard$"
-		if [[ "${?}" != 0 ]]; then
-			echo_yellow "No custom captive portals found!"
-			echo_brown "Please put Your custom captive portal files in:"
+		if ! cat "${tmpdir}ag.custom_portals.txt" | grep -Exvq "${standard_portal_text}$"; then
+			language_strings "${language}" "custom_portals_text_2" "yellow"
+			language_strings "${language}" "custom_portals_text_3" "yellow"
 			echo_brown "${scriptfolder}${plugins_dir}${custom_portals_dir}PORTAL_FOLDER/PORTAL_FILES"
 		fi
 		read -rp "> " selected_custom_portal
 		if [[ ! "${selected_custom_portal}" =~ ^[[:digit:]]+$ ]] || [[ "${selected_custom_portal}" -gt "${i}" ]] || [[ "${selected_custom_portal}" -lt 1 ]]; then
 			echo
-			echo_red "Invalid captive portal was chosen"
+			language_strings "${language}" "custom_portals_text_4" "red"
 			language_strings "${language}" 115 "read"
 		else
 			break
@@ -302,6 +302,87 @@ function custom_portals_prehook_set_captive_portal_language() {
 	fi
 	custom_portal="$(sed -n "${selected_custom_portal}"p "${tmpdir}ag.custom_portals.txt")"
 	rm "${tmpdir}ag.custom_portals.txt"
-	echo_yellow "Captive portal choosen: ${custom_portal}"
+	language_strings "${language}" "custom_portals_text_5" "yellow"
+	echo_yellow "${custom_portal}"
 	language_strings "${language}" 115 "read"
 }
+
+#Custom function. Create text messages to be used in custom portals plugin
+function initialize_custom_portals_language_strings() {
+
+	debug_print
+
+	arr["ENGLISH","custom_portals_text_0"]="Select Your captive portal:"
+	arr["SPANISH","custom_portals_text_0"]="\${pending_of_translation} Seleccione su portal cautivo:"
+	arr["FRENCH","custom_portals_text_0"]="\${pending_of_translation} Sélectionnez votre portail captif:"
+	arr["CATALAN","custom_portals_text_0"]="\${pending_of_translation} Seleccioneu el vostre portal en captivitat:"
+	arr["PORTUGUESE","custom_portals_text_0"]="\${pending_of_translation} Selecione Seu portal cativo:"
+	arr["RUSSIAN","custom_portals_text_0"]="\${pending_of_translation} Выберите свой портал:"
+	arr["GREEK","custom_portals_text_0"]="\${pending_of_translation} Επιλέξτε την δεσμευμένη πύλη σας:"
+	arr["ITALIAN","custom_portals_text_0"]="Seleziona il captive portal:"
+	arr["POLISH","custom_portals_text_0"]="\${pending_of_translation} Wybierz swój portal dla niewoli:"
+	arr["GERMAN","custom_portals_text_0"]="\${pending_of_translation} Wählen Sie Ihr Captive-Portal aus:"
+	arr["TURKISH","custom_portals_text_0"]="\${pending_of_translation} Esir portalınızı seçin:"
+
+	arr["ENGLISH","custom_portals_text_1"]="Standard"
+	arr["SPANISH","custom_portals_text_1"]="\${pending_of_translation} Estándar"
+	arr["FRENCH","custom_portals_text_1"]="\${pending_of_translation} Standard"
+	arr["CATALAN","custom_portals_text_1"]="\${pending_of_translation} Estàndard"
+	arr["PORTUGUESE","custom_portals_text_1"]="\${pending_of_translation} Padrão"
+	arr["RUSSIAN","custom_portals_text_1"]="\${pending_of_translation} стандарт"
+	arr["GREEK","custom_portals_text_1"]="\${pending_of_translation} Πρότυπο"
+	arr["ITALIAN","custom_portals_text_1"]="Standard"
+	arr["POLISH","custom_portals_text_1"]="\${pending_of_translation} Standard"
+	arr["GERMAN","custom_portals_text_1"]="\${pending_of_translation} Standard"
+	arr["TURKISH","custom_portals_text_1"]="\${pending_of_translation} Standart"
+
+	arr["ENGLISH","custom_portals_text_2"]="No custom captive portals found!"
+	arr["SPANISH","custom_portals_text_2"]="\${pending_of_translation} ¡No se encontraron portales cautivos personalizados!"
+	arr["FRENCH","custom_portals_text_2"]="\${pending_of_translation} Aucun portail captif personnalisé trouvé!"
+	arr["CATALAN","custom_portals_text_2"]="\${pending_of_translation} No s’han trobat portals en captivitat personalitzats!"
+	arr["PORTUGUESE","custom_portals_text_2"]="\${pending_of_translation} Não foram encontrados portais cativos personalizados!"
+	arr["RUSSIAN","custom_portals_text_2"]="\${pending_of_translation} Не найдено ни одного пользовательского портала!"
+	arr["GREEK","custom_portals_text_2"]="\${pending_of_translation} Δεν βρέθηκαν προσαρμοσμένες πύλες δέσμιας!"
+	arr["ITALIAN","custom_portals_text_2"]="Nessun captive portal personalizzato trovato!"
+	arr["POLISH","custom_portals_text_2"]="\${pending_of_translation} Nie znaleziono niestandardowych portali typu captive!"
+	arr["GERMAN","custom_portals_text_2"]="\${pending_of_translation} Keine benutzerdefinierten Captive-Portale gefunden!"
+	arr["TURKISH","custom_portals_text_2"]="\${pending_of_translation} Özel sabit portal bulunamadı!"
+
+	arr["ENGLISH","custom_portals_text_3"]="Please put Your custom captive portal files in:"
+	arr["SPANISH","custom_portals_text_3"]="\${pending_of_translation} Coloque sus archivos de portal cautivo personalizados en:"
+	arr["FRENCH","custom_portals_text_3"]="\${pending_of_translation} Veuillez placer vos fichiers de portail captif personnalisés dans:"
+	arr["CATALAN","custom_portals_text_3"]="\${pending_of_translation} Si us plau, introduïu els fitxers de portal personalitzat en captivitat a:"
+	arr["PORTUGUESE","custom_portals_text_3"]="\${pending_of_translation} Coloque seus arquivos de portal em cativeiro personalizados em:"
+	arr["RUSSIAN","custom_portals_text_3"]="\${pending_of_translation} Пожалуйста, поместите Ваши пользовательские файлы портала в:"
+	arr["GREEK","custom_portals_text_3"]="\${pending_of_translation} Τοποθετήστε τα προσαρμοσμένα αρχεία της πύλης δεσμευμένων σε:"
+	arr["ITALIAN","custom_portals_text_3"]="Inserisci i file dei captive portal personalizzati in:"
+	arr["POLISH","custom_portals_text_3"]="\${pending_of_translation} Proszę umieścić własne niestandardowe pliki portalu w:"
+	arr["GERMAN","custom_portals_text_3"]="\${pending_of_translation} Bitte legen Sie Ihre benutzerdefinierten Captive-Portal-Dateien in:"
+	arr["TURKISH","custom_portals_text_3"]="\${pending_of_translation} Lütfen özel esir portal dosyalarınızı buraya yerleştirin:"
+
+	arr["ENGLISH","custom_portals_text_4"]="Invalid captive portal was chosen!"
+	arr["SPANISH","custom_portals_text_4"]="\${pending_of_translation} ¡Se eligió el portal cautivo no válido!"
+	arr["FRENCH","custom_portals_text_4"]="\${pending_of_translation} Un portail captif non valide a été choisi!"
+	arr["CATALAN","custom_portals_text_4"]="\${pending_of_translation} El portal captiu no és vàlid!"
+	arr["PORTUGUESE","custom_portals_text_4"]="\${pending_of_translation} Portal cativo inválido foi escolhido!"
+	arr["RUSSIAN","custom_portals_text_4"]="\${pending_of_translation} Выбран неверный портал!"
+	arr["GREEK","custom_portals_text_4"]="\${pending_of_translation} Επιλέχθηκε μη έγκυρη πύλη αιχμαλωσίας!"
+	arr["ITALIAN","custom_portals_text_4"]="Scelta non valida!"
+	arr["POLISH","custom_portals_text_4"]="\${pending_of_translation} Wybrano nieprawidłowy portal dla niewoli!"
+	arr["GERMAN","custom_portals_text_4"]="\${pending_of_translation} Es wurde ein ungültiges Captive-Portal ausgewählt!"
+	arr["TURKISH","custom_portals_text_4"]="\${pending_of_translation} Geçersiz esir portal seçildi!"
+
+	arr["ENGLISH","custom_portals_text_5"]="Captive portal choosen:"
+	arr["SPANISH","custom_portals_text_5"]="\${pending_of_translation} Portal cautivo elegido:"
+	arr["FRENCH","custom_portals_text_5"]="\${pending_of_translation} Portail captif choisi:"
+	arr["CATALAN","custom_portals_text_5"]="\${pending_of_translation} Portal captiu escollit:"
+	arr["PORTUGUESE","custom_portals_text_5"]="\${pending_of_translation} Portal cativo escolhido:"
+	arr["RUSSIAN","custom_portals_text_5"]="\${pending_of_translation} Пленный портал выбран:"
+	arr["GREEK","custom_portals_text_5"]="\${pending_of_translation} Επιλεγμένη πύλη αιχμαλωσίας:"
+	arr["ITALIAN","custom_portals_text_5"]="Captive portal selezionato:"
+	arr["POLISH","custom_portals_text_5"]="\${pending_of_translation} Wybrany portal dla niewoli:"
+	arr["GERMAN","custom_portals_text_5"]="\${pending_of_translation} Captive Portal ausgewählt:"
+	arr["TURKISH","custom_portals_text_5"]="\${pending_of_translation} Seçilen esir portalı:"
+}
+
+initialize_custom_portals_language_strings
