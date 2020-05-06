@@ -25,7 +25,7 @@ bssid, channel, power, essid, encryption, default
 
 * **UI-Boost:**
 Speed up user interface by making a specifc language strings file.
-Even if slowness will be fixed directly in airgeddon 10.20, this plugin can decrease ram consumption, useful in devices with limited ram memory.
+Even if slowness is fixed in airgeddon 10.20, this plugin can decrease ram consumption, useful in devices with limited ram memory.
 
 ### INSTALL
 Simply put the .sh file of your choice in airgeddon's plugins folder.
