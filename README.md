@@ -19,7 +19,7 @@ You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon it
 Set regulatory domain to affect the availability of wireless channels and txpower.
 You can check the country codes database i.e. here https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb.git/tree/db.txt
 
-* **Sort-Targets:**
+* **Sort-Targets (minimum airgeddon version: 10.20):**
 When selecting targets, sort them by one of the following value:
 bssid, channel, power, essid, encryption, default
 
