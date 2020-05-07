@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.1.0
+# Version:    0.1.1
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -156,6 +156,24 @@ function captured_handshakes_prehook_enterprise_decrypt_menu() {
 	fi
 }
 
+#Check if captured_handshakes_dir exist
+function check_captured_handshakes_dir() {
+
+	debug_print
+
+	lastchar_captured_handshakes_dir=${captured_handshakes_dir: -1}
+	if [ "${lastchar_captured_handshakes_dir}" != "/" ]; then
+		captured_handshakes_dir="${captured_handshakes_dir}/"
+	fi
+	
+	if [[ ! -d "${captured_handshakes_dir}" ]]; then
+		mkdir -p "${captured_handshakes_dir}"
+		folder_owner="$(ls -ld "${captured_handshakes_dir}.." | awk -F' ' '{print $3}')"
+		folder_group="$(ls -ld "${captured_handshakes_dir}.." | awk -F' ' '{print $4}')"
+		chown "${folder_owner}":"${folder_group}" -R "${captured_handshakes_dir}"
+	fi
+}
+
 #Set default save path to captured_handshakes_dir
 function set_custom_default_save_path() {
 
@@ -286,4 +304,5 @@ function initialize_captured_handshakes_language_strings() {
 	arr["TURKISH","captured_handshakes_text_6"]="\${pending_of_translation} Yakalanan el sıkışma seçildi:"
 }
 
+check_captured_handshakes_dir
 initialize_captured_handshakes_language_strings
