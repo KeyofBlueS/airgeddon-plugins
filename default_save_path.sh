@@ -22,11 +22,14 @@ plugin_minimum_ag_affected_version="10.0"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
+################################# USER CONFIG SECTION #################################
 
 # Set the default directory for saving files
 # Default is plugins/output/
 # Example:
 custom_default_save_path="${scriptfolder}${plugins_dir}output/"
+
+############################## END OF USER CONFIG SECTION ##############################
 
 #Set the default directory for saving files
 function default_save_path_override_set_default_save_path() {
