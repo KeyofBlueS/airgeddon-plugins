@@ -10,10 +10,12 @@ Plugins for airgeddon https://github.com/v1s1t0r1sh3r3/airgeddon
 * **Captured-Handshakes (minimum airgeddon version: 10.20):**
 Put Your captured handshakes files in a directory of Your choice, then choose one of them inside airgeddon itself. Default path is plugins/captured_handshakes/HANDSHAKES_FILES
 
-
 * **Custom-Portals (minimum airgeddon version: 10.20):**
 Put Your custom captive portal files in a directory of Your choice. Default path is plugins/custom_portals/PORTAL_FOLDER/PORTAL_FILES.
 You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon itself. Take a look at custom_portals/OpenWRT_EXAMPLE for a custom captive portal example.
+
+* **Default-Save-Path:**
+Set the default directory for saving files. Default is plugins/output/
 
 * **Regdomain (minimum airgeddon version: 10.20):**
 Set regulatory domain to affect the availability of wireless channels and txpower.
