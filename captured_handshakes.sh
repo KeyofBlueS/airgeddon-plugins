@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.0.3
+# Version:    0.1.0
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -22,11 +22,15 @@ plugin_minimum_ag_affected_version="10.20"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
+################################# USER CONFIG SECTION #################################
 
-# Put Your captured handshakes files in plugins/captured_handshakes/HANDSHAKES
+# Put Your captured handshakes files in a directory of Your choice
+# Default is plugins/captured_handshakes/HANDSHAKES
+# Example:
+captured_handshakes_dir="${scriptfolder}${plugins_dir}captured_handshakes/"
 # then choose one of them inside airgeddon itself.
 
-captured_handshakes_dir="captured_handshakes/"
+############################## END OF USER CONFIG SECTION ##############################
 
 #Captured handshakes selection menu
 function list_captured_handshakes_files() {
@@ -52,7 +56,7 @@ function list_captured_handshakes_files() {
 		print_simple_separator
 
 		echo "${manual_handshakes_text}" > "${tmpdir}ag.captured_handshakes.txt"
-		ls -d1 -- "${scriptfolder}${plugins_dir}${captured_handshakes_dir}"* 2>/dev/null | rev | awk -F'/' '{print $1}' | rev | sort >> "${tmpdir}ag.captured_handshakes.txt"
+		ls -d1 -- "${captured_handshakes_dir}"* 2>/dev/null | rev | awk -F'/' '{print $1}' | rev | sort >> "${tmpdir}ag.captured_handshakes.txt"
 		local i=0
 		while IFS=, read -r exp_handshake; do
 
@@ -69,7 +73,7 @@ function list_captured_handshakes_files() {
 			
 			if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]]; then
 				if ! echo "${exp_handshake}" | grep -q "${manual_handshakes_text}"; then
-					if cat "${scriptfolder}${plugins_dir}${captured_handshakes_dir}${exp_handshake}" | grep -Fq "${essid}" > /dev/null 2>&1 || echo "${exp_handshake}" | grep -q "${bssid}"; then
+					if cat "${captured_handshakes_dir}${exp_handshake}" | grep -Fq "${essid}" > /dev/null 2>&1 || echo "${exp_handshake}" | grep -q "${bssid}"; then
 						likely_tip="1"
 						handshake_color="${yellow_color}"
 						likely="*"
@@ -90,7 +94,7 @@ function list_captured_handshakes_files() {
 		if ! cat "${tmpdir}ag.captured_handshakes.txt" | grep -Exvq "${manual_handshakes_text}$"; then
 			language_strings "${language}" "captured_handshakes_text_3" "yellow"
 			language_strings "${language}" "captured_handshakes_text_4" "yellow"
-			echo_brown "${scriptfolder}${plugins_dir}${captured_handshakes_dir}HANDSHAKES.cap"
+			echo_brown "${captured_handshakes_dir}HANDSHAKES.cap"
 		fi
 		read -rp "> " selected_captured_handshake
 		if [[ ! "${selected_captured_handshake}" =~ ^[[:digit:]]+$ ]] || [[ "${selected_captured_handshake}" -gt "${i}" ]] || [[ "${selected_captured_handshake}" -lt 1 ]]; then
@@ -106,7 +110,7 @@ function list_captured_handshakes_files() {
 		unset enteredpath
 		unset handshakepath
 	else
-		captured_handshake="${scriptfolder}${plugins_dir}${captured_handshakes_dir}$(sed -n "${selected_captured_handshake}"p "${tmpdir}ag.captured_handshakes.txt")"
+		captured_handshake="${captured_handshakes_dir}$(sed -n "${selected_captured_handshake}"p "${tmpdir}ag.captured_handshakes.txt")"
 		et_handshake="${captured_handshake}"
 		enteredpath="${captured_handshake}"
 		rm "${tmpdir}ag.captured_handshakes.txt"
@@ -160,7 +164,7 @@ function set_custom_default_save_path() {
 	if [ "${is_docker}" -eq 1 ]; then
 		default_save_path="${docker_io_dir}"
 	else
-		default_save_path="${scriptfolder}${plugins_dir}${captured_handshakes_dir}"
+		default_save_path="${captured_handshakes_dir}"
 	fi
 }
 
