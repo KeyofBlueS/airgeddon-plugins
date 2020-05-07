@@ -32,7 +32,7 @@ Simply put the .sh file of your choice in airgeddon's plugins folder.
 For more detailed instructions, please refer to airgeddon's documentations here https://github.com/v1s1t0r1sh3r3/airgeddon/wiki/Plugins%20System
 
 ### USAGE
-Some plugins can be configured, so please take a look inside the .sh file before use.
+Some plugins can be configured, so please take a look at # USER CONFIG SECTION # inside the .sh file before use.
 
 ### DONATIONS
 If You enjoyed my work and found it useful, You can support the project by making a donation through Paypal. Any amount, not matter how small (1, 2, 5 $/€) is welcome.
