@@ -2,7 +2,7 @@
 
 # Sort-Targets airgeddon plugin
 
-# Version:    0.0.2
+# Version:    0.1.0
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -22,11 +22,13 @@ plugin_minimum_ag_affected_version="10.20"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
+################################# USER CONFIG SECTION #################################
+
 # When selecting targets, sort them by one of the following value:
 # "bssid", "channel", "power", "essid", "encryption", "default"
 # or:
 # "menu"
-# if You want to choose sorting within a menu, this override reverse option.
+# if You want to choose sorting within a menu, this override reverse option too.
 # Example:
 #sort_by="power"
 sort_by=menu
@@ -39,6 +41,8 @@ reverse=false
 # by set remember_sort to "true", otherwise set to "false"
 # Example:
 remember_sort=false
+
+############################## END OF USER CONFIG SECTION ##############################
 
 #Sort targets
 function sort_targets_prehook_select_target() {

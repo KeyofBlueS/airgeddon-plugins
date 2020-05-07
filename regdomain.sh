@@ -2,7 +2,7 @@
 
 # Regdomain airgeddon plugin
 
-# Version:    0.0.2
+# Version:    0.1.0
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -22,10 +22,15 @@ plugin_minimum_ag_affected_version="10.20"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
-#You can check the country codes database i.e. here https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb.git/tree/db.txt
-#Set the country code
-#Example:
+################################# USER CONFIG SECTION #################################
+
+# You can check the country codes database i.e. here:
+# https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb.git/tree/db.txt
+# Set the country code
+# Example:
 regulatory_domain=BZ
+
+############################## END OF USER CONFIG SECTION ##############################
 
 #Custom function to set regulatory domain
 function set_regulatory_domain() {
@@ -65,6 +70,7 @@ function set_regulatory_domain() {
 	fi
 	language_strings "${language}" "regdomain_text_2" "yellow"
 	echo_yellow "${current_regulatory_domain}"
+	echo
 }
 
 #Prehook to set regulatory domain when setting interface in monitor mode

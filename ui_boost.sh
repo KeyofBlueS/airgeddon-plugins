@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.1.8
+# Version:    0.1.9
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -13,7 +13,7 @@
 #shellcheck disable=SC2034,SC2154
 
 plugin_name="UI-Boost"
-plugin_description="Speed up user interface by making a specifc language strings file"
+plugin_description="Make a specifc language strings file instead of using the complete one, speeding up ui and lowering ram usage"
 plugin_author="KeyofBlueS"
 
 plugin_enabled=1
@@ -22,13 +22,23 @@ plugin_minimum_ag_affected_version="10.0"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
-#Enabled 1 / Disabled 0 - Use hardcoded language menu strings when in language_menu - Default value 0
-#Enabling it it's a faster but a less reilable approach than using
-#original language_strings_file, in case of changes in this last.
+################################# USER CONFIG SECTION #################################
+
+# The advantages of using this plugin are a more reactive ui (not needed in 
+# airgeddon >=10.20), and a lower ram usage, useful in devices with limited ram
+# memory e.g smartphones, tablets ecc...
+
+# Enabled 1 / Disabled 0 - Use hardcoded language menu strings when in language_menu - Default value 0
+# Enabling it it's a faster but a less reilable approach than using
+# original language_strings_file, in case of changes in this last.
 hardcoded_language_menu_strings=0
+
+############################## END OF USER CONFIG SECTION ##############################
 
 #Custom function to make specifc language strings file
 function make_specifc_language_strings() {
+
+	debug_print
 
 	# detect languages to be excluded
 	if [ -n "${languages_to_exclude}" ]; then
@@ -58,6 +68,8 @@ function make_specifc_language_strings() {
 #Custom function to check if specifc language strings file exist and it's coherence
 function check_specifc_language_strings() {
 
+	debug_print
+
 	language_to_make="${1}"
 	if [ -e "${scriptfolder}${language_strings_file_complete%.*}"_"${language_to_make}".sh ]; then
 		source "${scriptfolder}${language_strings_file_complete%.*}"_"${language_to_make}".sh
@@ -78,6 +90,8 @@ function check_specifc_language_strings() {
 #Posthook to store some variables
 function ui_boost_posthook_remap_colors() {
 
+	debug_print
+
 	# store current language
 	language_current="${language}"
 	# store language_strings_file
@@ -88,14 +102,18 @@ function ui_boost_posthook_remap_colors() {
 #Prehook to let user change language in captive portal page
 function ui_boost_prehook_set_captive_portal_page() {
 
-		if [ "${captive_portal_language}" != "${language}" ]; then
-			check_specifc_language_strings "${captive_portal_language}"
-			#source "${scriptfolder}${language_strings_file_complete}"
-		fi
+	debug_print
+
+	if [ "${captive_portal_language}" != "${language}" ]; then
+		check_specifc_language_strings "${captive_portal_language}"
+		#source "${scriptfolder}${language_strings_file_complete}"
+	fi
 }
 
 #Posthook to let user change language in captive portal page
 function ui_boost_posthook_set_captive_portal_page() {
+
+	debug_print
 
 	if [ "${captive_portal_language}" != "${language}" ]; then
 		check_specifc_language_strings "${language}"
@@ -104,6 +122,8 @@ function ui_boost_posthook_set_captive_portal_page() {
 
 #Prehook to let user change language in options menu
 function ui_boost_prehook_language_menu() {
+
+	debug_print
 
 	if [ "${hardcoded_language_menu_strings}" -eq "1" ]; then
 		#hardcoded language_menu strings
@@ -155,6 +175,8 @@ function ui_boost_prehook_language_menu() {
 #Posthook to let user change language in options menu
 function ui_boost_posthook_language_menu() {
 
+	debug_print
+
 	check_specifc_language_strings "${language}"
 }
 
@@ -164,6 +186,8 @@ function ui_boost_posthook_language_menu() {
 #strings here, in case of changes in the original language_strings_file.
 function ui_boost_prehook_capture_traps() {
 
+	debug_print
+
 	if [ "${current_menu}" = "language_menu" ]; then
 		source "${scriptfolder}${language_strings_file_complete}"
 	fi
@@ -171,6 +195,8 @@ function ui_boost_prehook_capture_traps() {
 
 #Posthook to restore specifc language strings if user choose to not terminate the script anymore
 function ui_boost_posthook_capture_traps() {
+
+	debug_print
 
 	if [ "${current_menu}" = "language_menu" ]; then
 		check_specifc_language_strings "${language}"
