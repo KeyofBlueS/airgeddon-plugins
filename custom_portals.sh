@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.0.4
+# Version:    0.1.0
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -22,13 +22,23 @@ plugin_minimum_ag_affected_version="10.20"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
+################################# USER CONFIG SECTION #################################
 
-# Put Your custom captive portal files in plugins/custom_portals/PORTAL_FOLDER/PORTAL_FILES
+# Put Your custom captive portal files in a directory of Your choice
+# Default is plugins/custom_portals/PORTAL_FOLDER/PORTAL_FILES
+# Example:
+custom_portals_dir="${scriptfolder}${plugins_dir}custom_portals/"
 # You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon itself.
 # Including ESSID_HERE in the body of Your custom index file, will be replaced with the
 # essid of the target network.
+# Including TITLE_HERE in the body of Your custom index file, will be replaced with the
+# title in the chosen language. It's recommended to not customize title as, in my
+# experience, this will prevent clients to correctly detect a captive portal, so please
+# consider to use TITLE_HERE in order to set the default one, unless You know what You
+# are doing.
+# Take a look at custom_portals/OpenWRT_EXAMPLE for a custom captive portal example.
 
-custom_portals_dir="custom_portals/"
+############################## END OF USER CONFIG SECTION ##############################
 
 #Copy custom captive portal files.
 function custom_portals_override_set_captive_portal_page() {
@@ -36,7 +46,7 @@ function custom_portals_override_set_captive_portal_page() {
 	debug_print
 
 	if [[ "${copy_custom_portal}" -eq "1" ]]; then
-		cp "${scriptfolder}${plugins_dir}${custom_portals_dir}${custom_portal}/"* "${tmpdir}${webdir}"
+		cp "${custom_portals_dir}${custom_portal}/"* "${tmpdir}${webdir}"
 		unset copy_custom_portal
 	fi
 
@@ -145,8 +155,13 @@ function custom_portals_override_set_captive_portal_page() {
 		echo -e "echo '</html>'"
 		echo -e "exit 0"
 		} >> "${tmpdir}${webdir}${indexfile}"
-	elif cat "${tmpdir}${webdir}${indexfile}" | grep -q "ESSID_HERE"; then
-		sed -i "s/ESSID_HERE/${essid//[\`\']/}/g" "${tmpdir}${webdir}${indexfile}"
+	else
+		if cat "${tmpdir}${webdir}${indexfile}" | grep -q "ESSID_HERE"; then
+			sed -i "s/ESSID_HERE/${essid//[\`\']/}/g" "${tmpdir}${webdir}${indexfile}"
+		fi
+		if cat "${tmpdir}${webdir}${indexfile}" | grep -q "TITLE_HERE"; then
+			sed -i "s/TITLE_HERE/${et_misc_texts[${captive_portal_language},15]}/g" "${tmpdir}${webdir}${indexfile}"
+		fi
 	fi
 
 	exec 4>"${tmpdir}${webdir}${checkfile}"
@@ -263,7 +278,7 @@ function custom_portals_prehook_set_captive_portal_language() {
 		print_simple_separator
 
 		echo "${standard_portal_text}" > "${tmpdir}ag.custom_portals.txt"
-		ls -d1 -- "${scriptfolder}${plugins_dir}${custom_portals_dir}"*/ 2>/dev/null | rev | awk -F'/' '{print $2}' | rev | sort >> "${tmpdir}ag.custom_portals.txt"
+		ls -d1 -- "${custom_portals_dir}"*/ 2>/dev/null | rev | awk -F'/' '{print $2}' | rev | sort >> "${tmpdir}ag.custom_portals.txt"
 		local i=0
 		while IFS=, read -r exp_folder; do
 
@@ -284,7 +299,7 @@ function custom_portals_prehook_set_captive_portal_language() {
 		if ! cat "${tmpdir}ag.custom_portals.txt" | grep -Exvq "${standard_portal_text}$"; then
 			language_strings "${language}" "custom_portals_text_2" "yellow"
 			language_strings "${language}" "custom_portals_text_3" "yellow"
-			echo_brown "${scriptfolder}${plugins_dir}${custom_portals_dir}PORTAL_FOLDER/PORTAL_FILES"
+			echo_brown "${custom_portals_dir}PORTAL_FOLDER/PORTAL_FILES"
 		fi
 		read -rp "> " selected_custom_portal
 		if [[ ! "${selected_custom_portal}" =~ ^[[:digit:]]+$ ]] || [[ "${selected_custom_portal}" -gt "${i}" ]] || [[ "${selected_custom_portal}" -lt 1 ]]; then
