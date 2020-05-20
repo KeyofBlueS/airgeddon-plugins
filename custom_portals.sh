@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.1.0
+# Version:    0.1.1
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -157,6 +157,9 @@ function custom_portals_override_set_captive_portal_page() {
 		} >> "${tmpdir}${webdir}${indexfile}"
 	else
 		if cat "${tmpdir}${webdir}${indexfile}" | grep -q "ESSID_HERE"; then
+			if echo "${essid}" | grep -Fq "&"; then
+				essid=$(echo "${essid}" | sed -e 's/[\/&]/\\&/g')
+			fi
 			sed -i "s/ESSID_HERE/${essid//[\`\']/}/g" "${tmpdir}${webdir}${indexfile}"
 		fi
 		if cat "${tmpdir}${webdir}${indexfile}" | grep -q "TITLE_HERE"; then
