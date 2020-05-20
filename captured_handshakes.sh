@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.1.1
+# Version:    0.1.2
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -156,28 +156,12 @@ function captured_handshakes_prehook_enterprise_decrypt_menu() {
 	fi
 }
 
-#Check if captured_handshakes_dir exist
-function check_captured_handshakes_dir() {
-
-	debug_print
-
-	lastchar_captured_handshakes_dir=${captured_handshakes_dir: -1}
-	if [ "${lastchar_captured_handshakes_dir}" != "/" ]; then
-		captured_handshakes_dir="${captured_handshakes_dir}/"
-	fi
-	
-	if [[ ! -d "${captured_handshakes_dir}" ]]; then
-		mkdir -p "${captured_handshakes_dir}"
-		folder_owner="$(ls -ld "${captured_handshakes_dir}.." | awk -F' ' '{print $3}')"
-		folder_group="$(ls -ld "${captured_handshakes_dir}.." | awk -F' ' '{print $4}')"
-		chown "${folder_owner}":"${folder_group}" -R "${captured_handshakes_dir}"
-	fi
-}
-
 #Set default save path to captured_handshakes_dir
 function set_custom_default_save_path() {
 
 	debug_print
+	
+	stored_default_save_path="${default_save_path}"
 
 	if [ "${is_docker}" -eq 1 ]; then
 		default_save_path="${docker_io_dir}"
@@ -202,15 +186,65 @@ function captured_handshakes_prehook_launch_pmkid_capture() {
 	set_custom_default_save_path
 }
 
+#Set default save path to captured_handshakes_dir on capture_handshake_evil_twin
+function captured_handshakes_prehook_capture_handshake_evil_twin() {
+
+	debug_print
+
+	set_custom_default_save_path
+}
+
 #Restore default save path
-function captured_handshakes_posthook_validate_path() {
+function restore_default_save_path() {
 
 	debug_print
 
 	if [ "${is_docker}" -eq 1 ]; then
 		default_save_path="${docker_io_dir}"
 	else
-		default_save_path="${user_homedir}"
+		default_save_path="${stored_default_save_path}"
+	fi
+}
+
+#Restore default save path after launch_handshake_capture
+function captured_handshakes_posthook_launch_handshake_capture() {
+
+	debug_print
+
+	restore_default_save_path
+}
+
+#Restore default save path after launch_pmkid_capture
+function captured_handshakes_posthook_launch_pmkid_capture() {
+
+	debug_print
+
+	restore_default_save_path
+}
+
+#Restore default save path after capture_handshake_evil_twin
+function captured_handshakes_posthook_capture_handshake_evil_twin() {
+
+	debug_print
+
+	restore_default_save_path
+}
+
+#Check if captured_handshakes_dir exist
+function check_captured_handshakes_dir() {
+
+	debug_print
+
+	lastchar_captured_handshakes_dir=${captured_handshakes_dir: -1}
+	if [ "${lastchar_captured_handshakes_dir}" != "/" ]; then
+		captured_handshakes_dir="${captured_handshakes_dir}/"
+	fi
+	
+	if [[ ! -d "${captured_handshakes_dir}" ]]; then
+		mkdir -p "${captured_handshakes_dir}"
+		folder_owner="$(ls -ld "${captured_handshakes_dir}.." | awk -F' ' '{print $3}')"
+		folder_group="$(ls -ld "${captured_handshakes_dir}.." | awk -F' ' '{print $4}')"
+		chown "${folder_owner}":"${folder_group}" -R "${captured_handshakes_dir}"
 	fi
 }
 
