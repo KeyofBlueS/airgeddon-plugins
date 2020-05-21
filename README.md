@@ -37,7 +37,7 @@ For more detailed instructions, please refer to airgeddon's documentations here 
 Some plugins can be configured, so please take a look at # USER CONFIG SECTION # inside the .sh file before use.
 
 ### DONATIONS
-If You enjoyed my work and found it useful, You can support the project by making a donation through Paypal. Any amount, not matter how small (1, 2, 5 $/€) is welcome.
+If You enjoyed my work and found it useful please give a star, You can support the project by making a donation through Paypal. Any amount, not matter how small (1, 2, 5 $/€) is welcome.
 https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EFJW5YSFSLGRU&source=url
 
 and don't forget airgeddon too!
