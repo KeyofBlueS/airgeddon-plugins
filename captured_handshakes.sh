@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.1.3
+# Version:    0.1.4
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -71,14 +71,10 @@ function list_captured_handshakes_files() {
 			handshake_color="${normal_color}"
 			unset likely
 			
-			if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]]; then
-				if ! echo "${exp_handshake}" | grep -q "${manual_handshakes_text}"; then
-					if aircrack-ng "${captured_handshakes_dir}${exp_handshake}" | grep -Fq " ${essid} " && aircrack-ng "${captured_handshakes_dir}${exp_handshake}" | grep -Eiq "[[:digit:]]+ +${bssid} +"; then
-						likely_tip="1"
-						likely="*"
-						handshake_color="${yellow_color}"
-					fi
-				fi
+			if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]] && ! echo "${exp_handshake}" | grep -q "${manual_handshakes_text}" && aircrack-ng -q "${captured_handshakes_dir}${exp_handshake}" -b "${bssid}" > /dev/null && aircrack-ng -q "${captured_handshakes_dir}${exp_handshake}" -e "${essid}" > /dev/null; then
+				likely_tip="1"
+				likely="*"
+				handshake_color="${yellow_color}"
 			fi
 
 			handshake=${exp_handshake}
@@ -87,22 +83,23 @@ function list_captured_handshakes_files() {
 
 		unset selected_captured_handshake
 		echo
-		if [ "${likely_tip}" -eq 1 ]; then
-			language_strings "${language}" "captured_handshakes_text_2" "yellow"
+		if [ "${current_menu}" = "evil_twin_attacks_menu" ]; then
+			warning_color="red"
 		else
-			if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]]; then
-				if [ "${current_menu}" = "evil_twin_attacks_menu" ]; then
-					warning_color="red"
-				else
-					warning_color="yellow"
-				fi
-				language_strings "${language}" "captured_handshakes_text_3" "${warning_color}"
-			fi
+			warning_color="yellow"
 		fi
 		if ! cat "${tmpdir}ag.captured_handshakes.txt" | grep -Exvq "${manual_handshakes_text}$"; then
-			language_strings "${language}" "captured_handshakes_text_4" "yellow"
-			language_strings "${language}" "captured_handshakes_text_5" "yellow"
+			language_strings "${language}" "captured_handshakes_text_4" "${warning_color}"
+			language_strings "${language}" "captured_handshakes_text_5" "${warning_color}"
 			echo_brown "${captured_handshakes_dir}HANDSHAKES.cap"
+		else
+			if [ "${likely_tip}" -eq 1 ]; then
+				language_strings "${language}" "captured_handshakes_text_2" "yellow"
+			else
+				if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]]; then
+					language_strings "${language}" "captured_handshakes_text_3" "${warning_color}"
+				fi
+			fi
 		fi
 		likely_tip="0"
 		read -rp "> " selected_captured_handshake
