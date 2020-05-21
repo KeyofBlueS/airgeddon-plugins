@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.1.2
+# Version:    0.1.3
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -73,10 +73,10 @@ function list_captured_handshakes_files() {
 			
 			if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]]; then
 				if ! echo "${exp_handshake}" | grep -q "${manual_handshakes_text}"; then
-					if cat "${captured_handshakes_dir}${exp_handshake}" | grep -Fq "${essid}" > /dev/null 2>&1 || echo "${exp_handshake}" | grep -q "${bssid}"; then
+					if aircrack-ng "${captured_handshakes_dir}${exp_handshake}" | grep -Fq " ${essid} " && aircrack-ng "${captured_handshakes_dir}${exp_handshake}" | grep -Eiq "[[:digit:]]+ +${bssid} +"; then
 						likely_tip="1"
-						handshake_color="${yellow_color}"
 						likely="*"
+						handshake_color="${yellow_color}"
 					fi
 				fi
 			fi
@@ -87,19 +87,28 @@ function list_captured_handshakes_files() {
 
 		unset selected_captured_handshake
 		echo
-		if [ ${likely_tip} -eq 1 ]; then
+		if [ "${likely_tip}" -eq 1 ]; then
 			language_strings "${language}" "captured_handshakes_text_2" "yellow"
-			likely_tip="0"
+		else
+			if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]]; then
+				if [ "${current_menu}" = "evil_twin_attacks_menu" ]; then
+					warning_color="red"
+				else
+					warning_color="yellow"
+				fi
+				language_strings "${language}" "captured_handshakes_text_3" "${warning_color}"
+			fi
 		fi
 		if ! cat "${tmpdir}ag.captured_handshakes.txt" | grep -Exvq "${manual_handshakes_text}$"; then
-			language_strings "${language}" "captured_handshakes_text_3" "yellow"
 			language_strings "${language}" "captured_handshakes_text_4" "yellow"
+			language_strings "${language}" "captured_handshakes_text_5" "yellow"
 			echo_brown "${captured_handshakes_dir}HANDSHAKES.cap"
 		fi
+		likely_tip="0"
 		read -rp "> " selected_captured_handshake
 		if [[ ! "${selected_captured_handshake}" =~ ^[[:digit:]]+$ ]] || [[ "${selected_captured_handshake}" -gt "${i}" ]] || [[ "${selected_captured_handshake}" -lt 1 ]]; then
 			echo
-			language_strings "${language}" "captured_handshakes_text_5" "red"
+			language_strings "${language}" "captured_handshakes_text_6" "red"
 			language_strings "${language}" 115 "read"
 		else
 			break
@@ -114,7 +123,7 @@ function list_captured_handshakes_files() {
 		et_handshake="${captured_handshake}"
 		enteredpath="${captured_handshake}"
 		rm "${tmpdir}ag.captured_handshakes.txt"
-		language_strings "${language}" "captured_handshakes_text_6" "yellow"
+		language_strings "${language}" "captured_handshakes_text_7" "yellow"
 		echo_yellow "${captured_handshake}"
 		language_strings "${language}" 115 "read"
 	fi
@@ -280,7 +289,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["ENGLISH","captured_handshakes_text_2"]="(*) Likely"
 	arr["SPANISH","captured_handshakes_text_2"]="\${pending_of_translation} (*) Probable"
 	arr["FRENCH","captured_handshakes_text_2"]="\${pending_of_translation} (*) Probable"
-	arr["CATALAN","captured_handshakes_text_2"]="\${pending_of_translation} (*) Probablement"
+	arr["CATALAN","captured_handshakes_text_2"]="\${pending_of_translation} (*) probable"
 	arr["PORTUGUESE","captured_handshakes_text_2"]="\${pending_of_translation} (*) Provável"
 	arr["RUSSIAN","captured_handshakes_text_2"]="\${pending_of_translation} (*) Скорее всего"
 	arr["GREEK","captured_handshakes_text_2"]="\${pending_of_translation} (*) Πιθανός"
@@ -289,53 +298,65 @@ function initialize_captured_handshakes_language_strings() {
 	arr["GERMAN","captured_handshakes_text_2"]="\${pending_of_translation} (*) Wahrscheinlich"
 	arr["TURKISH","captured_handshakes_text_2"]="\${pending_of_translation} (*) muhtemelen"
 
-	arr["ENGLISH","captured_handshakes_text_3"]="No captured handshake file found!"
-	arr["SPANISH","captured_handshakes_text_3"]="\${pending_of_translation} ¡No se encontraron handshake capturados!"
-	arr["FRENCH","captured_handshakes_text_3"]="\${pending_of_translation} Aucun fichier de handshake capturé trouvé!"
-	arr["CATALAN","captured_handshakes_text_3"]="\${pending_of_translation} No s'ha trobat cap fitxer de handshake capturat!"
-	arr["PORTUGUESE","captured_handshakes_text_3"]="\${pending_of_translation} Nenhum arquivo de handshake capturado encontrado!"
-	arr["RUSSIAN","captured_handshakes_text_3"]="\${pending_of_translation} Не найден захваченный файл рукопожатия!"
-	arr["GREEK","captured_handshakes_text_3"]="\${pending_of_translation} Δεν βρέθηκε αρχείο χειραψίας!"
-	arr["ITALIAN","captured_handshakes_text_3"]="Nessun file di handshake catturato trovato!"
-	arr["POLISH","captured_handshakes_text_3"]="\${pending_of_translation} Nie znaleziono przechwyconego pliku uzgadniania!"
-	arr["GERMAN","captured_handshakes_text_3"]="\${pending_of_translation} Keine erfasste Handshake-Datei gefunden!"
-	arr["TURKISH","captured_handshakes_text_3"]="\${pending_of_translation} Yakalanan bir el sıkışma dosyası bulunamadı!"
+	arr["ENGLISH","captured_handshakes_text_3"]="No captured handshake file for the selected network found!"
+	arr["SPANISH","captured_handshakes_text_3"]="\${pending_of_translation} ¡No se encontró ningún archivo de handshake capturado para la red seleccionada!"
+	arr["FRENCH","captured_handshakes_text_3"]="\${pending_of_translation} Aucun fichier de handshake capturé pour le réseau sélectionné trouvé!"
+	arr["CATALAN","captured_handshakes_text_3"]="\${pending_of_translation} No s'ha trobat cap fitxer de handshake capturat per a la xarxa seleccionada!"
+	arr["PORTUGUESE","captured_handshakes_text_3"]="\${pending_of_translation} Nenhum arquivo de handshake capturado para a rede selecionada foi encontrado!"
+	arr["RUSSIAN","captured_handshakes_text_3"]="\${pending_of_translation} Не найден захваченный файл рукопожатия для выбранной сети!"
+	arr["GREEK","captured_handshakes_text_3"]="\${pending_of_translation} Δεν βρέθηκε αρχείο χειραψίας για το επιλεγμένο δίκτυο!"
+	arr["ITALIAN","captured_handshakes_text_3"]="Nessun file di handshake catturato trovato per la rete selezionata!"
+	arr["POLISH","captured_handshakes_text_3"]="\${pending_of_translation} Nie znaleziono przechwyconego pliku uzgadniania dla wybranej sieci!"
+	arr["GERMAN","captured_handshakes_text_3"]="\${pending_of_translation} Keine erfasste Handshake-Datei für das ausgewählte Netzwerk gefunden!"
+	arr["TURKISH","captured_handshakes_text_3"]="\${pending_of_translation} Seçilen ağ için yakalanan el sıkışma dosyası bulunamadı!"
 
-	arr["ENGLISH","captured_handshakes_text_4"]="Please put Your captured handshakes files in:"
-	arr["SPANISH","captured_handshakes_text_4"]="\${pending_of_translation} Ponga sus archivos de handshake capturados en:"
-	arr["FRENCH","captured_handshakes_text_4"]="\${pending_of_translation} Veuillez mettre vos fichiers de handshake capturés dans:"
-	arr["CATALAN","captured_handshakes_text_4"]="\${pending_of_translation} Introduïu els fitxers de handshake capturats:"
-	arr["PORTUGUESE","captured_handshakes_text_4"]="\${pending_of_translation} Coloque seus arquivos de handshakes capturados em:"
-	arr["RUSSIAN","captured_handshakes_text_4"]="\${pending_of_translation} Пожалуйста, поместите ваши захваченные файлы рукопожатий в:"
-	arr["GREEK","captured_handshakes_text_4"]="\${pending_of_translation} Τοποθετήστε τα αρχεία χειραψιών που έχετε τραβήξει:"
-	arr["ITALIAN","captured_handshakes_text_4"]="Inserisci i file di handshake catturati in:"
-	arr["POLISH","captured_handshakes_text_4"]="\${pending_of_translation} Umieść swoje przechwycone pliki uzgadniania:"
-	arr["GERMAN","captured_handshakes_text_4"]="\${pending_of_translation} Bitte legen Sie Ihre erfassten Handshakes-Dateien ein:"
-	arr["TURKISH","captured_handshakes_text_4"]="\${pending_of_translation} Lütfen Yakalanan tokalaşma dosyalarınızı buraya yerleştirin:"
+	arr["ENGLISH","captured_handshakes_text_4"]="No captured handshake file found!"
+	arr["SPANISH","captured_handshakes_text_4"]="\${pending_of_translation} ¡No se encontraron handshake capturados!"
+	arr["FRENCH","captured_handshakes_text_4"]="\${pending_of_translation} Aucun fichier de handshake capturé trouvé!"
+	arr["CATALAN","captured_handshakes_text_4"]="\${pending_of_translation} No s'ha trobat cap fitxer de handshake capturat!"
+	arr["PORTUGUESE","captured_handshakes_text_4"]="\${pending_of_translation} Nenhum arquivo de handshake capturado encontrado!"
+	arr["RUSSIAN","captured_handshakes_text_4"]="\${pending_of_translation} Не найден захваченный файл рукопожатия!"
+	arr["GREEK","captured_handshakes_text_4"]="\${pending_of_translation} Δεν βρέθηκε αρχείο χειραψίας!"
+	arr["ITALIAN","captured_handshakes_text_4"]="Nessun file di handshake catturato trovato!"
+	arr["POLISH","captured_handshakes_text_4"]="\${pending_of_translation} Nie znaleziono przechwyconego pliku uzgadniania!"
+	arr["GERMAN","captured_handshakes_text_4"]="\${pending_of_translation} Keine erfasste Handshake-Datei gefunden!"
+	arr["TURKISH","captured_handshakes_text_4"]="\${pending_of_translation} Yakalanan bir el sıkışma dosyası bulunamadı!"
 
-	arr["ENGLISH","captured_handshakes_text_5"]="Invalid captured handshake was chosen!"
-	arr["SPANISH","captured_handshakes_text_5"]="\${pending_of_translation} Se eligió un handshake capturado no válido!"
-	arr["FRENCH","captured_handshakes_text_5"]="\${pending_of_translation} Une handshake capturée non valide a été choisie!"
-	arr["CATALAN","captured_handshakes_text_5"]="\${pending_of_translation} S'ha escollit un handshake capturat no vàlid!"
-	arr["PORTUGUESE","captured_handshakes_text_5"]="\${pending_of_translation} O handshake capturado inválido foi escolhido!"
-	arr["RUSSIAN","captured_handshakes_text_5"]="\${pending_of_translation} Неверное захваченное рукопожатие было выбрано!"
-	arr["GREEK","captured_handshakes_text_5"]="\${pending_of_translation} Επιλέχθηκε μη έγκυρη χειραψία!"
-	arr["ITALIAN","captured_handshakes_text_5"]="Scelta non valida!"
-	arr["POLISH","captured_handshakes_text_5"]="\${pending_of_translation} Wybrano nieprawidłowy ujęty uścisk dłoni!"
-	arr["GERMAN","captured_handshakes_text_5"]="\${pending_of_translation} Es wurde ein ungültiger erfasster handshake ausgewählt!"
-	arr["TURKISH","captured_handshakes_text_5"]="\${pending_of_translation} Geçersiz yakalanan el sıkışma seçildi!"
+	arr["ENGLISH","captured_handshakes_text_5"]="Please put Your captured handshakes files in:"
+	arr["SPANISH","captured_handshakes_text_5"]="\${pending_of_translation} Ponga sus archivos de handshake capturados en:"
+	arr["FRENCH","captured_handshakes_text_5"]="\${pending_of_translation} Veuillez mettre vos fichiers de handshake capturés dans:"
+	arr["CATALAN","captured_handshakes_text_5"]="\${pending_of_translation} Introduïu els fitxers de handshake capturats:"
+	arr["PORTUGUESE","captured_handshakes_text_5"]="\${pending_of_translation} Coloque seus arquivos de handshakes capturados em:"
+	arr["RUSSIAN","captured_handshakes_text_5"]="\${pending_of_translation} Пожалуйста, поместите ваши захваченные файлы рукопожатий в:"
+	arr["GREEK","captured_handshakes_text_5"]="\${pending_of_translation} Τοποθετήστε τα αρχεία χειραψιών που έχετε τραβήξει:"
+	arr["ITALIAN","captured_handshakes_text_5"]="Inserisci i file di handshake catturati in:"
+	arr["POLISH","captured_handshakes_text_5"]="\${pending_of_translation} Umieść swoje przechwycone pliki uzgadniania:"
+	arr["GERMAN","captured_handshakes_text_5"]="\${pending_of_translation} Bitte legen Sie Ihre erfassten Handshakes-Dateien ein:"
+	arr["TURKISH","captured_handshakes_text_5"]="\${pending_of_translation} Lütfen Yakalanan tokalaşma dosyalarınızı buraya yerleştirin:"
 
-	arr["ENGLISH","captured_handshakes_text_6"]="Captured handshake choosen:"
-	arr["SPANISH","captured_handshakes_text_6"]="\${pending_of_translation} Handshake capturado elegido:"
-	arr["FRENCH","captured_handshakes_text_6"]="\${pending_of_translation} Handshake capturée choisie:"
-	arr["CATALAN","captured_handshakes_text_6"]="\${pending_of_translation} Handshake capturat:"
-	arr["PORTUGUESE","captured_handshakes_text_6"]="\${pending_of_translation} Handshake capturado escolhido:"
-	arr["RUSSIAN","captured_handshakes_text_6"]="\${pending_of_translation} Захваченное рукопожатие выбрано:"
-	arr["GREEK","captured_handshakes_text_6"]="\${pending_of_translation} Επιλεγμένη χειραψία:"
-	arr["ITALIAN","captured_handshakes_text_6"]="Handshake scelto:"
-	arr["POLISH","captured_handshakes_text_6"]="\${pending_of_translation} Wybrany uścisk dłoni:"
-	arr["GERMAN","captured_handshakes_text_6"]="\${pending_of_translation} Erfasster Handshake ausgewählt:"
-	arr["TURKISH","captured_handshakes_text_6"]="\${pending_of_translation} Yakalanan el sıkışma seçildi:"
+	arr["ENGLISH","captured_handshakes_text_6"]="Invalid captured handshake was chosen!"
+	arr["SPANISH","captured_handshakes_text_6"]="\${pending_of_translation} Se eligió un handshake capturado no válido!"
+	arr["FRENCH","captured_handshakes_text_6"]="\${pending_of_translation} Une handshake capturée non valide a été choisie!"
+	arr["CATALAN","captured_handshakes_text_6"]="\${pending_of_translation} S'ha escollit un handshake capturat no vàlid!"
+	arr["PORTUGUESE","captured_handshakes_text_6"]="\${pending_of_translation} O handshake capturado inválido foi escolhido!"
+	arr["RUSSIAN","captured_handshakes_text_6"]="\${pending_of_translation} Неверное захваченное рукопожатие было выбрано!"
+	arr["GREEK","captured_handshakes_text_6"]="\${pending_of_translation} Επιλέχθηκε μη έγκυρη χειραψία!"
+	arr["ITALIAN","captured_handshakes_text_6"]="Scelta non valida!"
+	arr["POLISH","captured_handshakes_text_6"]="\${pending_of_translation} Wybrano nieprawidłowy ujęty uścisk dłoni!"
+	arr["GERMAN","captured_handshakes_text_6"]="\${pending_of_translation} Es wurde ein ungültiger erfasster handshake ausgewählt!"
+	arr["TURKISH","captured_handshakes_text_6"]="\${pending_of_translation} Geçersiz yakalanan el sıkışma seçildi!"
+
+	arr["ENGLISH","captured_handshakes_text_7"]="Captured handshake choosen:"
+	arr["SPANISH","captured_handshakes_text_7"]="\${pending_of_translation} Handshake capturado elegido:"
+	arr["FRENCH","captured_handshakes_text_7"]="\${pending_of_translation} Handshake capturée choisie:"
+	arr["CATALAN","captured_handshakes_text_7"]="\${pending_of_translation} Handshake capturat:"
+	arr["PORTUGUESE","captured_handshakes_text_7"]="\${pending_of_translation} Handshake capturado escolhido:"
+	arr["RUSSIAN","captured_handshakes_text_7"]="\${pending_of_translation} Захваченное рукопожатие выбрано:"
+	arr["GREEK","captured_handshakes_text_7"]="\${pending_of_translation} Επιλεγμένη χειραψία:"
+	arr["ITALIAN","captured_handshakes_text_7"]="Handshake scelto:"
+	arr["POLISH","captured_handshakes_text_7"]="\${pending_of_translation} Wybrany uścisk dłoni:"
+	arr["GERMAN","captured_handshakes_text_7"]="\${pending_of_translation} Erfasster Handshake ausgewählt:"
+	arr["TURKISH","captured_handshakes_text_7"]="\${pending_of_translation} Yakalanan el sıkışma seçildi:"
 }
 
 check_captured_handshakes_dir
