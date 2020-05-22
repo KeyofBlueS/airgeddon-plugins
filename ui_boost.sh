@@ -2,7 +2,7 @@
 
 # UI-Boost airgeddon plugin
 
-# Version:    0.1.9
+# Version:    0.1.10
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -19,14 +19,13 @@ plugin_author="KeyofBlueS"
 plugin_enabled=1
 
 plugin_minimum_ag_affected_version="10.0"
-plugin_maximum_ag_affected_version=""
+plugin_maximum_ag_affected_version="10.11"
 plugin_distros_supported=("*")
 
 ################################# USER CONFIG SECTION #################################
 
 # The advantages of using this plugin are a more reactive ui (not needed in 
-# airgeddon >=10.20), and a lower ram usage, useful in devices with limited ram
-# memory e.g smartphones, tablets ecc...
+# airgeddon >=10.20).
 
 # Enabled 1 / Disabled 0 - Use hardcoded language menu strings when in language_menu - Default value 0
 # Enabling it it's a faster but a less reilable approach than using
