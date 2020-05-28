@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.1.1
+# Version:    0.1.2
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -285,16 +285,18 @@ function custom_portals_prehook_set_captive_portal_language() {
 		local i=0
 		while IFS=, read -r exp_folder; do
 
-			i=$((i + 1))
+			if [[ -d "${custom_portals_dir}${exp_folder}" ]] || [[ "${exp_folder}" = "${standard_portal_text}" ]]; then
+				i=$((i + 1))
 
-			if [ ${i} -le 9 ]; then
-				sp1=" "
-			else
-				sp1=""
+				if [ ${i} -le 9 ]; then
+					sp1=" "
+				else
+					sp1=""
+				fi
+
+				portal=${exp_folder}
+				echo -e "${sp1}${i}) ${portal}"
 			fi
-
-			portal=${exp_folder}
-			echo -e "${sp1}${i}) ${portal}"
 		done < "${tmpdir}ag.custom_portals.txt"
 
 		unset selected_custom_portal
@@ -330,6 +332,7 @@ function initialize_custom_portals_language_strings() {
 
 	debug_print
 
+	declare -gA arr
 	arr["ENGLISH","custom_portals_text_0"]="Select Your captive portal:"
 	arr["SPANISH","custom_portals_text_0"]="\${pending_of_translation} Seleccione su portal cautivo:"
 	arr["FRENCH","custom_portals_text_0"]="\${pending_of_translation} Sélectionnez votre portail captif:"
