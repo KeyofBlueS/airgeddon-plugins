@@ -61,7 +61,7 @@ function list_captured_handshakes_files() {
 		local i=0
 		while IFS=, read -r exp_handshake; do
 
-			if [[ -f "${captured_handshakes_dir}${exp_handshake}" ]]; then
+			if [[ -f "${captured_handshakes_dir}${exp_handshake}" ]] || [[ "${exp_handshake}" = "${manual_handshakes_text}" ]]; then
 				i=$((i + 1))
 
 				if [ ${i} -le 9 ]; then
