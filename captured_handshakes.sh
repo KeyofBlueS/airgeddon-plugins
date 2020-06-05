@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.1.6
+# Version:    0.1.7
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -57,7 +57,7 @@ function list_captured_handshakes_files() {
 		print_simple_separator
 
 		echo "${manual_handshakes_text}" > "${tmpdir}ag.captured_handshakes.txt"
-		ls -d1 -- "${captured_handshakes_dir}"* 2>/dev/null | rev | awk -F'/' '{print $1}' | rev | sort >> "${tmpdir}ag.captured_handshakes.txt"
+		ls -pd1 -- "${captured_handshakes_dir}"* 2>/dev/null | grep -v /$ | rev | awk -F'/' '{print $1}' | rev | sort >> "${tmpdir}ag.captured_handshakes.txt"
 		local i=0
 		while IFS=, read -r exp_handshake; do
 
