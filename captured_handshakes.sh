@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.1.7
+# Version:    0.1.8
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -78,7 +78,7 @@ function list_captured_handshakes_files() {
 						set_likely
 					fi
 				else
-					if cat "${captured_handshakes_dir}${exp_handshake}" | grep -Eq "^[[:alnum:]]{32}\*[[:alnum:]]{12}\*[[:alnum:]]{12}\*[[:alnum:]]{34}$"; then
+					if cat "${captured_handshakes_dir}${exp_handshake}" | grep -Eq "^[[:alnum:]]{32}\*[[:alnum:]]{12}\*[[:alnum:]]{12}\*[[:alnum:]]+$"; then
 						clean_bssid="$(echo "${bssid}" | tr -d ':')"
 						ascii_essid="$(cat "${captured_handshakes_dir}${exp_handshake}" | rev | awk -F'*' '{print $1}' | rev | awk 'RT{printf "%c", strtonum("0x"RT)}' RS='[0-9A-Fa-f]{2}')"
 						if echo "${essid}" | grep -q "${ascii_essid}" && cat "${captured_handshakes_dir}${exp_handshake}" | awk -F'*' '{print $2}' | grep -iq "${clean_bssid}"; then
