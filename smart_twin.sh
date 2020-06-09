@@ -2,7 +2,7 @@
 
 # Smart-Twin airgeddon plugin
 
-# Version:    0.0.1
+# Version:    0.0.2
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -22,6 +22,28 @@ plugin_minimum_ag_affected_version="10.20"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
+################################# USER CONFIG SECTION ##################################
+
+# Seconds elapsed before mark Target as down
+# Please don't set a too low value as it can cause false positives
+# Example:
+ap_timeout=15
+
+# Number of times before the Evil Twin Access Point will be disabled if marked as down
+# Please don't set a value less than 2 as it can cause false positives
+# Example:
+ap_down=2
+
+# Check for Target every <value> seconds
+# Example:
+ap_check=4
+
+# Set to true to enable debug messages in main airgeddon window, otherwise set to false
+# Example:
+smart_twin_debug=false
+
+############################## END OF USER CONFIG SECTION ##############################
+
 #Check Target availability and enable/disable Evil Twin AP accordingly
 function manage_evil_twin_ap() {
 
@@ -29,17 +51,22 @@ function manage_evil_twin_ap() {
 
 	target_check=1
 	access_point_down=0
-	ap_timeout=20
 
 	while true; do
-		current_time="$(date "+%Y%m%d%H%M%S")"
+		current_date="$(date +%s)"
 		if grep -Eq "^${bssid}, " "${tmpdir}dos_pm-01.csv" > /dev/null 2>&1; then
-			lastseen="$(grep -E "^${bssid}, " "${tmpdir}dos_pm-01.csv" | awk -F', ' '{print $3}' | tr -d '\-\ \:')"
-			elapsed_time="$(expr "${current_time}" - "${lastseen}")"
+			lastseen_date="$(date -d"$(grep -E "^${bssid}, " "${tmpdir}dos_pm-01.csv" | awk -F', ' '{print $3}')" +%s)"
+			elapsed_seconds="$(expr "${current_date}" - "${lastseen_date}")"
 		else
-			elapsed_time="${ap_timeout}"
+			elapsed_seconds="${ap_timeout}"
 		fi
-		if [[ "${elapsed_time}" -lt "${ap_timeout}" ]]; then
+		if [[ "${smart_twin_debug}" = "true" ]]; then
+			echo ------------------------
+			echo "current time:    $(date -d @${current_date})"
+			echo "lastseen time:   $(date -d @${lastseen_date})"
+			echo "elapsed seconds: ${elapsed_seconds}"
+		fi
+		if [[ "${elapsed_seconds}" -lt "${ap_timeout}" ]]; then
 			access_point_down=0
 			if hostapd_cli status interface "${interface}" 2>/dev/null | grep -q "state=DISABLED"; then
 				echo
@@ -54,7 +81,7 @@ function manage_evil_twin_ap() {
 			fi
 		else
 			access_point_down="$(expr "${access_point_down}" + 1)"
-			if [[ "${access_point_down}" -gt 2 ]] && hostapd_cli status interface "${interface}" 2>/dev/null | grep -q "state=ENABLED"; then
+			if [[ "${access_point_down}" -gt "${ap_down}" ]] && hostapd_cli status interface "${interface}" 2>/dev/null | grep -q "state=ENABLED"; then
 				echo
 				if hostapd_cli disable interface "${interface}" > /dev/null 2>&1; then
 					language_strings "${language}" "smart_twin_text_2" "yellow"
@@ -63,11 +90,24 @@ function manage_evil_twin_ap() {
 				fi
 			fi
 		fi
+		if [[ "${smart_twin_debug}" = "true" ]]; then
+			echo "consecutive times down: ${access_point_down}"
+		fi
 		if ! pgrep -f "hostapd ${tmpdir}${current_hostapd_file}" > /dev/null 2>&1; then
 			unset target_check
 			break
 		fi
-		sleep 4
+		if [[ "${smart_twin_debug}" = "true" ]]; then
+			countdown="$(expr "${ap_check}" + 1)"
+			while [[ "${countdown}" -le "$(expr "${ap_check}" + 1)" ]] && [[ "${countdown}" -gt 0 ]]; do
+				countdown="$(expr "${countdown}" - 1)"
+				echo -en "\r\e[1;35mCheck Target in "${countdown}" seconds...   \e[0m\c"
+				sleep 1
+			done
+			echo
+		else
+			sleep "${ap_check}"
+		fi
 	done
 }
 
