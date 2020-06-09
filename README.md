@@ -21,14 +21,18 @@ Set the default directory for saving files. Default is plugins/output/
 Set regulatory domain to affect the availability of wireless channels and txpower.
 You can check the country codes database i.e. here https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb.git/tree/db.txt
 
+* **Smart-Twin (minimum airgeddon version: 10.20):**
+Enable/Disable Evil Twin Access Point based on Target availability. Only work in Pursuit Mode.
+Disabling Evil Twin Access Point when the target network is no longer present (e.g. the attacked router is turned off) is useful to make the attack less suspicious.
+
 * **Sort-Targets (minimum airgeddon version: 10.20):**
 When selecting targets, sort them by one of the following value:
 bssid, channel, power, essid, encryption, default
 
 * **UI-Boost (maximum airgeddon version: 10.11):**
 Make a specifc language strings file instead of using the complete one, speeding up ui.
-The advantages of using this plugin are a more reactive ui (not needed in airgeddon >=10.20).
-Potentially this plugin could lowering ram usage, useful in devices with limited ram memory e.g smartphones, tablets ecc..., but this is not possible with airgeddon as it is right now. I'm discussing with airgeddon's developers to make it possible. Hopefully we will get this feature, meanwhile this plugin is deprecated for airgeddon >=10.20.
+The advantages of using this plugin is a more reactive ui (not needed in airgeddon >=10.20).
+Potentially this plugin could lower ram usage, useful in devices with limited ram memory e.g smartphones, tablets ecc..., but this is not possible with airgeddon as it is right now. I'm discussing with airgeddon's developers to make it possible. Hopefully we will get this feature, meanwhile this plugin is deprecated for airgeddon >=10.20.
 
 ### INSTALL
 Simply put the .sh file of your choice in airgeddon's plugins folder.
