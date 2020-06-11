@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.1.2
+# Version:    0.1.3
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -38,6 +38,13 @@ custom_portals_dir="${scriptfolder}${plugins_dir}custom_portals/"
 # are doing.
 # Take a look at custom_portals/OpenWRT_EXAMPLE for a custom captive portal example.
 
+# *** WARNING ***
+# Enabling the detection of passwords containing *&/?<> characters is very dangerous as
+# injections can be done on captive portal page and the hacker could be hacked by some
+# kind of command injection on the captive portal page.
+# Set to "true" AT YOUR OWN RISK!
+custom_portals_full_password=false
+
 ############################## END OF USER CONFIG SECTION ##############################
 
 #Copy custom captive portal files.
@@ -48,6 +55,11 @@ function custom_portals_override_set_captive_portal_page() {
 	if [[ "${copy_custom_portal}" -eq "1" ]]; then
 		cp "${custom_portals_dir}${custom_portal}/"* "${tmpdir}${webdir}"
 		unset copy_custom_portal
+	fi
+
+	if [[ "${custom_portals_full_password}" = "true" ]]; then
+		echo
+		language_strings "${language}" "custom_portals_text_6" "red"
 	fi
 
 	if [[ ! -f "${tmpdir}${webdir}${cssfile}" ]]; then
@@ -184,18 +196,33 @@ function custom_portals_override_set_captive_portal_page() {
 		echo -e '\t\t\t<center><p>'
 	EOF
 
-	cat >&4 <<-'EOF'
-		POST_DATA=$(cat /dev/stdin)
-		if [[ "${REQUEST_METHOD}" = "POST" ]] && [[ ${CONTENT_LENGTH} -gt 0 ]]; then
-			POST_DATA=${POST_DATA#*=}
-			password=${POST_DATA/+/ }
-			password=${password//[*&\/?<>]}
-			password=$(printf '%b' "${password//%/\\x}")
-			password=${password//[*&\/?<>]}
-		fi
+	if [[ "${custom_portals_full_password}" = "true" ]]; then
+		cat >&4 <<-'EOF'
+			POST_DATA=$(cat /dev/stdin)
+			if [[ "${REQUEST_METHOD}" = "POST" ]] && [[ ${CONTENT_LENGTH} -gt 0 ]]; then
+				POST_DATA=${POST_DATA#*=}
+				password=${POST_DATA/+/ }
+				password=${password//[]}
+				password=$(printf '%b' "${password//%/\\x}")
+				password=${password//[]}
+			fi
 
-		if [[ ${#password} -ge 8 ]] && [[ ${#password} -le 63 ]]; then
-	EOF
+			if [[ ${#password} -ge 8 ]] && [[ ${#password} -le 63 ]]; then
+		EOF
+	else
+		cat >&4 <<-'EOF'
+			POST_DATA=$(cat /dev/stdin)
+			if [[ "${REQUEST_METHOD}" = "POST" ]] && [[ ${CONTENT_LENGTH} -gt 0 ]]; then
+				POST_DATA=${POST_DATA#*=}
+				password=${POST_DATA/+/ }
+				password=${password//[*&\/?<>]}
+				password=$(printf '%b' "${password//%/\\x}")
+				password=${password//[*&\/?<>]}
+			fi
+
+			if [[ ${#password} -ge 8 ]] && [[ ${#password} -le 63 ]]; then
+		EOF
+	fi
 
 	cat >&4 <<-EOF
 			rm -rf "${tmpdir}${webdir}${currentpassfile}" > /dev/null 2>&1
@@ -404,6 +431,18 @@ function initialize_custom_portals_language_strings() {
 	arr["POLISH","custom_portals_text_5"]="\${pending_of_translation} Wybrany portal dla niewoli:"
 	arr["GERMAN","custom_portals_text_5"]="\${pending_of_translation} Captive Portal ausgewählt:"
 	arr["TURKISH","custom_portals_text_5"]="\${pending_of_translation} Seçilen esir portalı:"
+
+	arr["ENGLISH","custom_portals_text_6"]="WARNING: detection of passwords containing *&/?<> characters is ENABLED!"
+	arr["SPANISH","custom_portals_text_6"]="\${pending_of_translation} ADVERTENCIA: ¡la detección de contraseñas que contienen caracteres *&/?<> Está HABILITADA!"
+	arr["FRENCH","custom_portals_text_6"]="\${pending_of_translation} ATTENTION: la détection des mots de passe contenant des caractères *&/?<> Est ACTIVÉE!"
+	arr["CATALAN","custom_portals_text_6"]="\${pending_of_translation} ADVERTIMENT: la detecció de contrasenyes que contenen caràcters *&/?<> Està habilitada!"
+	arr["PORTUGUESE","custom_portals_text_6"]="\${pending_of_translation} AVISO: a detecção de senhas que contêm caracteres *&/?<> Está ATIVADA!"
+	arr["RUSSIAN","custom_portals_text_6"]="\${pending_of_translation} ВНИМАНИЕ: обнаружение паролей, содержащих символы *&/?<> ВКЛЮЧЕНО!"
+	arr["GREEK","custom_portals_text_6"]="\${pending_of_translation} ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ανίχνευση κωδικών πρόσβασης που περιέχουν χαρακτήρες *&/?<> ΕΝΕΡΓΟΠΟΙΗΘΕΙ!"
+	arr["ITALIAN","custom_portals_text_6"]="ATTENZIONE: il rilevamento di password contenenti caratteri *&/?<> È ABILITATO!"
+	arr["POLISH","custom_portals_text_6"]="\${pending_of_translation} OSTRZEŻENIE: wykrywanie haseł zawierających znaki *&/?<> Jest WŁĄCZONE!"
+	arr["GERMAN","custom_portals_text_6"]="\${pending_of_translation} WARNUNG: Die Erkennung von Passwörtern mit *&/?<> Zeichen ist AKTIVIERT!"
+	arr["TURKISH","custom_portals_text_6"]="\${pending_of_translation} UYARI: *&/?<> Karakterleri içeren şifrelerin tespiti ETKİN!"
 }
 
 initialize_custom_portals_language_strings
