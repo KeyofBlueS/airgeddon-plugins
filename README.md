@@ -32,7 +32,7 @@ bssid, channel, power, essid, encryption, default
 * **UI-Boost (maximum airgeddon version: 10.11):**
 Make a specifc language strings file instead of using the complete one, speeding up ui.
 The advantages of using this plugin is a more reactive ui (not needed in airgeddon >=10.20).
-Potentially this plugin could lower ram usage, useful in devices with limited ram memory e.g smartphones, tablets ecc..., but this is not possible with airgeddon as it is right now. I'm discussing with airgeddon's developers to make it possible. Hopefully we will get this feature, meanwhile this plugin is deprecated for airgeddon >=10.20.
+Potentially this plugin could lower ram usage, useful in devices with limited ram memory e.g smartphones, tablets ecc..., but this is not possible with airgeddon as it is. I've discussed with airgeddon's developers to make it possible but sadly we'll not get this feature, so this plugin is deprecated for airgeddon >=10.20.
 
 ### INSTALL
 Simply put the .sh file of your choice in airgeddon's plugins folder.
