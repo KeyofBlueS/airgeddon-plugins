@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.1.8
+# Version:    0.1.9
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -37,7 +37,7 @@ function list_captured_handshakes_files() {
 
 	debug_print
 
-	manual_handshakes_text="$(echo "${arr[${language},captured_handshakes_text_1]}")"
+	manual_handshakes_text="this_is_the_manual_handshakes_text"
 	likely_tip="0"
 	unsupported_tip="0"
 	while true; do
@@ -58,41 +58,45 @@ function list_captured_handshakes_files() {
 
 		echo "${manual_handshakes_text}" > "${tmpdir}ag.captured_handshakes.txt"
 		ls -pd1 -- "${captured_handshakes_dir}"* 2>/dev/null | grep -v /$ | rev | awk -F'/' '{print $1}' | rev | sort >> "${tmpdir}ag.captured_handshakes.txt"
-		local i=0
+		local i=1
 		while IFS=, read -r exp_handshake; do
 
 			if [[ -f "${captured_handshakes_dir}${exp_handshake}" ]] || [[ "${exp_handshake}" = "${manual_handshakes_text}" ]]; then
-				i=$((i + 1))
-
-				if [ ${i} -le 9 ]; then
-					sp1=" "
+				if [[ "${exp_handshake}" = "${manual_handshakes_text}" ]]; then
+					language_strings "${language}" "captured_handshakes_text_1"
 				else
-					sp1=""
-				fi
+					i=$((i + 1))
 
-				handshake_color="${normal_color}"
-				unset likely
-
-				if ! aircrack-ng "${captured_handshakes_dir}${exp_handshake}" 2>&1 | grep -Fq "Unsupported file format (not a pcap or IVs file)."; then
-					if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]] && ! echo "${exp_handshake}" | grep -q "${manual_handshakes_text}" && aircrack-ng -q "${captured_handshakes_dir}${exp_handshake}" -b "${bssid}" > /dev/null 2>&1 && aircrack-ng -q "${captured_handshakes_dir}${exp_handshake}" -e "${essid}" > /dev/null 2>&1; then
-						set_likely
+					if [ ${i} -le 9 ]; then
+						sp1=" "
+					else
+						sp1=""
 					fi
-				else
-					if cat "${captured_handshakes_dir}${exp_handshake}" | grep -Eq "^[[:alnum:]]{32}\*[[:alnum:]]{12}\*[[:alnum:]]{12}\*[[:alnum:]]+$"; then
-						clean_bssid="$(echo "${bssid}" | tr -d ':')"
-						ascii_essid="$(cat "${captured_handshakes_dir}${exp_handshake}" | rev | awk -F'*' '{print $1}' | rev | awk 'RT{printf "%c", strtonum("0x"RT)}' RS='[0-9A-Fa-f]{2}')"
-						if echo "${essid}" | grep -q "${ascii_essid}" && cat "${captured_handshakes_dir}${exp_handshake}" | awk -F'*' '{print $2}' | grep -iq "${clean_bssid}"; then
+
+					handshake_color="${normal_color}"
+					unset likely
+
+					if ! aircrack-ng "${captured_handshakes_dir}${exp_handshake}" 2>&1 | grep -Fq "Unsupported file format (not a pcap or IVs file)."; then
+						if [[ -n "${essid}" ]] && [[ -n "${bssid}" ]] && ! echo "${exp_handshake}" | grep -q "${manual_handshakes_text}" && aircrack-ng -q "${captured_handshakes_dir}${exp_handshake}" -b "${bssid}" > /dev/null 2>&1 && aircrack-ng -q "${captured_handshakes_dir}${exp_handshake}" -e "${essid}" > /dev/null 2>&1; then
 							set_likely
 						fi
 					else
-						unsupported_tip="1"
-						likely="!"
-						handshake_color="${red_color}"
+						if cat "${captured_handshakes_dir}${exp_handshake}" | grep -Eq "^[[:alnum:]]{32}\*[[:alnum:]]{12}\*[[:alnum:]]{12}\*[[:alnum:]]+$"; then
+							clean_bssid="$(echo "${bssid}" | tr -d ':')"
+							ascii_essid="$(cat "${captured_handshakes_dir}${exp_handshake}" | rev | awk -F'*' '{print $1}' | rev | awk 'RT{printf "%c", strtonum("0x"RT)}' RS='[0-9A-Fa-f]{2}')"
+							if echo "${essid}" | grep -q "${ascii_essid}" && cat "${captured_handshakes_dir}${exp_handshake}" | awk -F'*' '{print $2}' | grep -iq "${clean_bssid}"; then
+								set_likely
+							fi
+						else
+							unsupported_tip="1"
+							likely="!"
+							handshake_color="${red_color}"
+						fi
 					fi
-				fi
 
-				handshake=${exp_handshake}
-				echo -e "${handshake_color} ${sp1}${i}) ${handshake} ${likely}"
+					handshake=${exp_handshake}
+					echo -e "${handshake_color} ${sp1}${i}) ${handshake} ${likely}"
+				fi
 			fi
 		done < "${tmpdir}ag.captured_handshakes.txt"
 
@@ -301,17 +305,17 @@ function initialize_captured_handshakes_language_strings() {
 	arr["GERMAN","captured_handshakes_text_0"]="\${pending_of_translation} Erfasste Handshake-Datei auswählen:"
 	arr["TURKISH","captured_handshakes_text_0"]="\${pending_of_translation} Yakalanan el sıkışma dosyasını seçin:"
 
-	arr["ENGLISH","captured_handshakes_text_1"]="Manually enter the path of the captured handshake file"
-	arr["SPANISH","captured_handshakes_text_1"]="\${pending_of_translation} Ingrese manualmente la ruta del archivo de handshake capturado"
-	arr["FRENCH","captured_handshakes_text_1"]="\${pending_of_translation} Entrez manuellement le chemin du fichier de handshake capturé"
-	arr["CATALAN","captured_handshakes_text_1"]="\${pending_of_translation} Introduïu manualment la ruta del fitxer de handshake capturat"
-	arr["PORTUGUESE","captured_handshakes_text_1"]="\${pending_of_translation} Insira manualmente o caminho do arquivo de handshake capturado"
-	arr["RUSSIAN","captured_handshakes_text_1"]="\${pending_of_translation} Вручную введите путь к захваченному файлу рукопожатия"
-	arr["GREEK","captured_handshakes_text_1"]="\${pending_of_translation} Εισαγάγετε μη αυτόματα τη διαδρομή του καταγεγραμμένου αρχείου χειραψίας"
-	arr["ITALIAN","captured_handshakes_text_1"]="Inserisci manualmente il percorso del file di handshake"
-	arr["POLISH","captured_handshakes_text_1"]="\${pending_of_translation} Ręcznie wprowadź ścieżkę przechwyconego pliku uzgadniania"
-	arr["GERMAN","captured_handshakes_text_1"]="\${pending_of_translation} Geben Sie den Pfad der erfassten Handshake-Datei manuell ein"
-	arr["TURKISH","captured_handshakes_text_1"]="\${pending_of_translation} Yakalanan el sıkışma dosyasının yolunu el ile girin"
+	arr["ENGLISH","captured_handshakes_text_1"]="  1) Manually enter the path of the captured handshake file"
+	arr["SPANISH","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Ingrese manualmente la ruta del archivo de handshake capturado"
+	arr["FRENCH","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Entrez manuellement le chemin du fichier de handshake capturé"
+	arr["CATALAN","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Introduïu manualment la ruta del fitxer de handshake capturat"
+	arr["PORTUGUESE","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Insira manualmente o caminho do arquivo de handshake capturado"
+	arr["RUSSIAN","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Вручную введите путь к захваченному файлу рукопожатия"
+	arr["GREEK","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Εισαγάγετε μη αυτόματα τη διαδρομή του καταγεγραμμένου αρχείου χειραψίας"
+	arr["ITALIAN","captured_handshakes_text_1"]="  1) Inserisci manualmente il percorso del file di handshake"
+	arr["POLISH","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Ręcznie wprowadź ścieżkę przechwyconego pliku uzgadniania"
+	arr["GERMAN","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Geben Sie den Pfad der erfassten Handshake-Datei manuell ein"
+	arr["TURKISH","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Yakalanan el sıkışma dosyasının yolunu el ile girin"
 
 	arr["ENGLISH","captured_handshakes_text_2"]="(*) Likely"
 	arr["SPANISH","captured_handshakes_text_2"]="\${pending_of_translation} (*) Probable"
@@ -326,16 +330,16 @@ function initialize_captured_handshakes_language_strings() {
 	arr["TURKISH","captured_handshakes_text_2"]="\${pending_of_translation} (*) muhtemelen"
 
 	arr["ENGLISH","captured_handshakes_text_3"]="(!) Unsupported file format"
-	arr["SPANISH","captured_handshakes_text_3"]="(!) Formato de archivo no soportado"
-	arr["FRENCH","captured_handshakes_text_3"]="(!) Format de fichier non pris en charge"
+	arr["SPANISH","captured_handshakes_text_3"]="\${pending_of_translation} (!) Formato de archivo no soportado"
+	arr["FRENCH","captured_handshakes_text_3"]="\${pending_of_translation} (!) Format de fichier non pris en charge"
 	arr["CATALAN","captured_handshakes_text_3"]="\${pending_of_translation} (!) Format de fitxer no compatible"
-	arr["PORTUGUESE","captured_handshakes_text_3"]="(!) Formato de arquivo não suportado"
+	arr["PORTUGUESE","captured_handshakes_text_3"]="\${pending_of_translation} (!) Formato de arquivo não suportado"
 	arr["RUSSIAN","captured_handshakes_text_3"]="\${pending_of_translation} (!) Неподдерживаемый формат файла"
 	arr["GREEK","captured_handshakes_text_3"]="\${pending_of_translation} (!) Μη υποστηριζόμενη μορφή αρχείου"
 	arr["ITALIAN","captured_handshakes_text_3"]="(!) Formato file non supportato"
-	arr["POLISH","captured_handshakes_text_3"]="(!) Niewspierany format pliku"
-	arr["GERMAN","captured_handshakes_text_3"]="(!) Nicht unterstütztes Dateiformat"
-	arr["TURKISH","captured_handshakes_text_3"]="(!) Desteklenmeyen dosya formatı"
+	arr["POLISH","captured_handshakes_text_3"]="\${pending_of_translation} (!) Niewspierany format pliku"
+	arr["GERMAN","captured_handshakes_text_3"]="\${pending_of_translation} (!) Nicht unterstütztes Dateiformat"
+	arr["TURKISH","captured_handshakes_text_3"]="\${pending_of_translation} (!) Desteklenmeyen dosya formatı"
 
 	arr["ENGLISH","captured_handshakes_text_4"]="No captured handshake file for the selected network found!"
 	arr["SPANISH","captured_handshakes_text_4"]="\${pending_of_translation} ¡No se encontró ningún archivo de handshake capturado para la red seleccionada!"
