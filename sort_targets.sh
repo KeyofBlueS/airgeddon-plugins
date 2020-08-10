@@ -2,7 +2,7 @@
 
 # Sort-Targets airgeddon plugin
 
-# Version:    0.1.0
+# Version:    0.1.1
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -58,12 +58,12 @@ function sort_targets_prehook_select_target() {
 			language_strings "${language}" "sort_targets_text_0" "green"
 			echo
 			print_simple_separator
-			echo -en " 1) bssid" && echo -e "       7) bssid (${arr[${language},sort_targets_text_1]})"
-			echo -en " 2) channel" && echo -e "     8) channel (${arr[${language},sort_targets_text_1]})"
-			echo -en " 3) power" && echo -e "       9) power (${arr[${language},sort_targets_text_1]})"
-			echo -en " 4) essid" && echo -e "      10) essid (${arr[${language},sort_targets_text_1]})"
-			echo -en " 5) encryption" && echo -e " 11) encryption (${arr[${language},sort_targets_text_1]})"
-			echo -en " 6) default" && echo -e "    12) default (${arr[${language},sort_targets_text_1]})"
+			language_strings "${language}" "sort_targets_text_1"
+			language_strings "${language}" "sort_targets_text_2"
+			language_strings "${language}" "sort_targets_text_3"
+			language_strings "${language}" "sort_targets_text_4"
+			language_strings "${language}" "sort_targets_text_5"
+			language_strings "${language}" "sort_targets_text_6"
 			print_simple_separator
 			read -rp "> " sort_by
 
@@ -106,7 +106,7 @@ function sort_targets_prehook_select_target() {
 				;;
 				*)
 					echo
-					language_strings "${language}" "sort_targets_text_2" "red"
+					language_strings "${language}" "sort_targets_text_7" "red"
 					language_strings "${language}" 115 "read"
 				;;
 			esac
@@ -159,29 +159,89 @@ function initialize_sort_targets_language_strings() {
 	arr["GERMAN","sort_targets_text_0"]="\${pending_of_translation} Wählen Sie die Reihenfolge aus, in der die Liste der Ziele angezeigt werden soll:"
 	arr["TURKISH","sort_targets_text_0"]="\${pending_of_translation} Hedef listesinin görüntüleneceği sırayı seçin:"
 
-	arr["ENGLISH","sort_targets_text_1"]="reverse"
-	arr["SPANISH","sort_targets_text_1"]="\${pending_of_translation} inverso"
-	arr["FRENCH","sort_targets_text_1"]="\${pending_of_translation} inverser"
-	arr["CATALAN","sort_targets_text_1"]="\${pending_of_translation} revés"
-	arr["PORTUGUESE","sort_targets_text_1"]="\${pending_of_translation} reverter"
-	arr["RUSSIAN","sort_targets_text_1"]="\${pending_of_translation} обратный"
-	arr["GREEK","sort_targets_text_1"]="\${pending_of_translation} αντίστροφος"
-	arr["ITALIAN","sort_targets_text_1"]="invertito"
-	arr["POLISH","sort_targets_text_1"]="\${pending_of_translation} odwrotność"
-	arr["GERMAN","sort_targets_text_1"]="\${pending_of_translation} umgekehrt"
-	arr["TURKISH","sort_targets_text_1"]="\${pending_of_translation} ters"
+	arr["ENGLISH","sort_targets_text_1"]=" 1) bssid       7) bssid (reverse)"
+	arr["SPANISH","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
+	arr["FRENCH","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} inverser)"
+	arr["CATALAN","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} revés)"
+	arr["PORTUGUESE","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} reverter)"
+	arr["RUSSIAN","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} обратный)"
+	arr["GREEK","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} αντίστροφος)"
+	arr["ITALIAN","sort_targets_text_1"]=" 1) bssid       7) bssid (invertito)"
+	arr["POLISH","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
+	arr["GERMAN","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
+	arr["TURKISH","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
 
-	arr["ENGLISH","sort_targets_text_2"]="Invalid choice!"
-	arr["SPANISH","sort_targets_text_2"]="\${pending_of_translation} ¡Elección inválida!"
-	arr["FRENCH","sort_targets_text_2"]="\${pending_of_translation} Choix invalide!"
-	arr["CATALAN","sort_targets_text_2"]="\${pending_of_translation} Elecció no vàlida!"
-	arr["PORTUGUESE","sort_targets_text_2"]="\${pending_of_translation} Escolha inválida!"
-	arr["RUSSIAN","sort_targets_text_2"]="\${pending_of_translation} Неверный выбор!"
-	arr["GREEK","sort_targets_text_2"]="\${pending_of_translation} Μη έγκυρη επιλογή!"
-	arr["ITALIAN","sort_targets_text_2"]="Scelta non valida!"
-	arr["POLISH","sort_targets_text_2"]="\${pending_of_translation} Nieprawidłowy wybór!"
-	arr["GERMAN","sort_targets_text_2"]="\${pending_of_translation} Ungültige Wahl!"
-	arr["TURKISH","sort_targets_text_2"]="\${pending_of_translation} Geçersiz seçim!"
+	arr["ENGLISH","sort_targets_text_2"]=" 2) channel     8) channel (reverse)"
+	arr["SPANISH","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
+	arr["FRENCH","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} inverser)"
+	arr["CATALAN","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} revés)"
+	arr["PORTUGUESE","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} reverter)"
+	arr["RUSSIAN","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} обратный)"
+	arr["GREEK","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} αντίστροφος)"
+	arr["ITALIAN","sort_targets_text_2"]=" 2) channel     8) channel (invertito)"
+	arr["POLISH","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
+	arr["GERMAN","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
+	arr["TURKISH","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+
+	arr["ENGLISH","sort_targets_text_3"]=" 3) power       9) power (reverse)"
+	arr["SPANISH","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
+	arr["FRENCH","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} inverser)"
+	arr["CATALAN","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} revés)"
+	arr["PORTUGUESE","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} reverter)"
+	arr["RUSSIAN","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} обратный)"
+	arr["GREEK","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} αντίστροφος)"
+	arr["ITALIAN","sort_targets_text_3"]=" 3) power       9) power (invertito)"
+	arr["POLISH","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
+	arr["GERMAN","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
+	arr["TURKISH","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+
+	arr["ENGLISH","sort_targets_text_4"]=" 4) essid      10) essid (reverse)"
+	arr["SPANISH","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
+	arr["FRENCH","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} inverser)"
+	arr["CATALAN","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} revés)"
+	arr["PORTUGUESE","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} reverter)"
+	arr["RUSSIAN","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} обратный)"
+	arr["GREEK","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} αντίστροφος)"
+	arr["ITALIAN","sort_targets_text_4"]=" 4) essid      10) essid (invertito)"
+	arr["POLISH","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
+	arr["GERMAN","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
+	arr["TURKISH","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+
+	arr["ENGLISH","sort_targets_text_5"]=" 5) encryption 11) encryption (reverse)"
+	arr["SPANISH","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
+	arr["FRENCH","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} inverser)"
+	arr["CATALAN","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} revés)"
+	arr["PORTUGUESE","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} reverter)"
+	arr["RUSSIAN","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} обратный)"
+	arr["GREEK","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} αντίστροφος)"
+	arr["ITALIAN","sort_targets_text_5"]=" 5) encryption 11) encryption (invertito)"
+	arr["POLISH","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
+	arr["GERMAN","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
+	arr["TURKISH","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+
+	arr["ENGLISH","sort_targets_text_6"]=" 6) default    12) default (reverse)"
+	arr["SPANISH","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
+	arr["FRENCH","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} inverser)"
+	arr["CATALAN","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} revés)"
+	arr["PORTUGUESE","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} reverter)"
+	arr["RUSSIAN","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} обратный)"
+	arr["GREEK","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} αντίστροφος)"
+	arr["ITALIAN","sort_targets_text_6"]=" 6) default    12) default (invertito)"
+	arr["POLISH","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
+	arr["GERMAN","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
+	arr["TURKISH","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+
+	arr["ENGLISH","sort_targets_text_7"]="Invalid choice!"
+	arr["SPANISH","sort_targets_text_7"]="\${pending_of_translation} ¡Elección inválida!"
+	arr["FRENCH","sort_targets_text_7"]="\${pending_of_translation} Choix invalide!"
+	arr["CATALAN","sort_targets_text_7"]="\${pending_of_translation} Elecció no vàlida!"
+	arr["PORTUGUESE","sort_targets_text_7"]="\${pending_of_translation} Escolha inválida!"
+	arr["RUSSIAN","sort_targets_text_7"]="\${pending_of_translation} Неверный выбор!"
+	arr["GREEK","sort_targets_text_7"]="\${pending_of_translation} Μη έγκυρη επιλογή!"
+	arr["ITALIAN","sort_targets_text_7"]="Scelta non valida!"
+	arr["POLISH","sort_targets_text_7"]="\${pending_of_translation} Nieprawidłowy wybór!"
+	arr["GERMAN","sort_targets_text_7"]="\${pending_of_translation} Ungültige Wahl!"
+	arr["TURKISH","sort_targets_text_7"]="\${pending_of_translation} Geçersiz seçim!"
 }
 
 initialize_sort_targets_language_strings
