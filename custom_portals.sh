@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.1.3
+# Version:    0.1.4
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -53,7 +53,7 @@ function custom_portals_override_set_captive_portal_page() {
 	debug_print
 
 	if [[ "${copy_custom_portal}" -eq "1" ]]; then
-		cp "${custom_portals_dir}${custom_portal}/"* "${tmpdir}${webdir}"
+		cp -r "${custom_portals_dir}${custom_portal}/"* "${tmpdir}${webdir}"
 		unset copy_custom_portal
 	fi
 
@@ -296,7 +296,7 @@ function custom_portals_prehook_set_captive_portal_language() {
 
 	debug_print
 
-	standard_portal_text="$(echo "${arr[${language},custom_portals_text_1]}")"
+	standard_portal_text="this_is_the_standard_portal_text"
 	while true; do
 		clear
 		language_strings "${language}" 293 "title"
@@ -309,20 +309,24 @@ function custom_portals_prehook_set_captive_portal_language() {
 
 		echo "${standard_portal_text}" > "${tmpdir}ag.custom_portals.txt"
 		ls -d1 -- "${custom_portals_dir}"*/ 2>/dev/null | rev | awk -F'/' '{print $2}' | rev | sort >> "${tmpdir}ag.custom_portals.txt"
-		local i=0
+		local i=1
 		while IFS=, read -r exp_folder; do
 
 			if [[ -d "${custom_portals_dir}${exp_folder}" ]] || [[ "${exp_folder}" = "${standard_portal_text}" ]]; then
-				i=$((i + 1))
-
-				if [ ${i} -le 9 ]; then
-					sp1=" "
+				if [[ "${exp_folder}" = "${standard_portal_text}" ]]; then
+					language_strings "${language}" "custom_portals_text_1"
 				else
-					sp1=""
-				fi
+					i=$((i + 1))
 
-				portal=${exp_folder}
-				echo -e "${sp1}${i}) ${portal}"
+					if [ ${i} -le 9 ]; then
+						sp1=" "
+					else
+						sp1=""
+					fi
+
+					portal=${exp_folder}
+					echo -e "${sp1}${i}) ${portal}"
+				fi
 			fi
 		done < "${tmpdir}ag.custom_portals.txt"
 
@@ -373,16 +377,16 @@ function initialize_custom_portals_language_strings() {
 	arr["TURKISH","custom_portals_text_0"]="\${pending_of_translation} Esir portalınızı seçin:"
 
 	arr["ENGLISH","custom_portals_text_1"]="Standard"
-	arr["SPANISH","custom_portals_text_1"]="\${pending_of_translation} Estándar"
-	arr["FRENCH","custom_portals_text_1"]="\${pending_of_translation} Standard"
-	arr["CATALAN","custom_portals_text_1"]="\${pending_of_translation} Estàndard"
-	arr["PORTUGUESE","custom_portals_text_1"]="\${pending_of_translation} Padrão"
-	arr["RUSSIAN","custom_portals_text_1"]="\${pending_of_translation} стандарт"
-	arr["GREEK","custom_portals_text_1"]="\${pending_of_translation} Πρότυπο"
+	arr["SPANISH","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Estándar"
+	arr["FRENCH","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Standard"
+	arr["CATALAN","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Estàndard"
+	arr["PORTUGUESE","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Padrão"
+	arr["RUSSIAN","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} стандарт"
+	arr["GREEK","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Πρότυπο"
 	arr["ITALIAN","custom_portals_text_1"]="Standard"
-	arr["POLISH","custom_portals_text_1"]="\${pending_of_translation} Standard"
-	arr["GERMAN","custom_portals_text_1"]="\${pending_of_translation} Standard"
-	arr["TURKISH","custom_portals_text_1"]="\${pending_of_translation} Standart"
+	arr["POLISH","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Standard"
+	arr["GERMAN","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Standard"
+	arr["TURKISH","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Standart"
 
 	arr["ENGLISH","custom_portals_text_2"]="No custom captive portals found!"
 	arr["SPANISH","custom_portals_text_2"]="\${pending_of_translation} ¡No se encontraron portales cautivos personalizados!"
