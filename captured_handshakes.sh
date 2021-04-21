@@ -18,7 +18,7 @@ plugin_author="KeyofBlueS"
 
 plugin_enabled=1
 
-plugin_minimum_ag_affected_version="10.20"
+plugin_minimum_ag_affected_version="10.30"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
