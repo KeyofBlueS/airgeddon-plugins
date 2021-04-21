@@ -2,7 +2,7 @@
 
 # Regdomain airgeddon plugin
 
-# Version:    0.1.0
+# Version:    0.1.1
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -134,6 +134,7 @@ function initialize_regdomain_language_strings() {
 	arr["POLISH","regdomain_text_0"]="\${pending_of_translation} Ustawianie domeny regulacyjnej..."
 	arr["GERMAN","regdomain_text_0"]="\${pending_of_translation} Festlegen der regulatorischen Domäne..."
 	arr["TURKISH","regdomain_text_0"]="\${pending_of_translation} Yasal alan adı ayarlanıyor..."
+	arr["ARABIC","regdomain_text_0"]="\${pending_of_translation} تحديد المجال التنظيمي"
 
 	arr["ENGLISH","regdomain_text_1"]="Error while setting regulatory domain!"
 	arr["SPANISH","regdomain_text_1"]="\${pending_of_translation} ¡Error al configurar el dominio regulador!"
@@ -146,6 +147,7 @@ function initialize_regdomain_language_strings() {
 	arr["POLISH","regdomain_text_1"]="\${pending_of_translation} Błąd podczas ustawiania domeny regulacyjnej!"
 	arr["GERMAN","regdomain_text_1"]="\${pending_of_translation} Fehler beim Einstellen der Regulierungsdomäne!"
 	arr["TURKISH","regdomain_text_1"]="\${pending_of_translation} Yasal alan adı ayarlanırken hata oluştu!"
+	arr["ARABIC","regdomain_text_1"]="\${pending_of_translation} خطأ أثناء تعيين المجال التنظيمي"
 
 	arr["ENGLISH","regdomain_text_2"]="Current regulatory domain is:"
 	arr["SPANISH","regdomain_text_2"]="\${pending_of_translation} El dominio regulador actual es:"
@@ -158,6 +160,7 @@ function initialize_regdomain_language_strings() {
 	arr["POLISH","regdomain_text_2"]="\${pending_of_translation} Obecna domena regulacyjna to:"
 	arr["GERMAN","regdomain_text_2"]="\${pending_of_translation} Aktuelle regulatorische Domäne ist:"
 	arr["TURKISH","regdomain_text_2"]="\${pending_of_translation} Mevcut yasal alan adı:"
+	arr["ARABIC","regdomain_text_2"]="\${pending_of_translation} المجال التنظيمي الحالي هو"
 }
 
 initialize_regdomain_language_strings
