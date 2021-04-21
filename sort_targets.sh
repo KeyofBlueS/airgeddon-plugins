@@ -2,7 +2,7 @@
 
 # Sort-Targets airgeddon plugin
 
-# Version:    0.1.1
+# Version:    0.1.2
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -158,6 +158,7 @@ function initialize_sort_targets_language_strings() {
 	arr["POLISH","sort_targets_text_0"]="\${pending_of_translation} Wybierz kolejność wyświetlania listy celów:"
 	arr["GERMAN","sort_targets_text_0"]="\${pending_of_translation} Wählen Sie die Reihenfolge aus, in der die Liste der Ziele angezeigt werden soll:"
 	arr["TURKISH","sort_targets_text_0"]="\${pending_of_translation} Hedef listesinin görüntüleneceği sırayı seçin:"
+	arr["ARABIC","sort_targets_text_0"]="\${pending_of_translation} حدد الترتيب الذي تريد عرض قائمة الأهداف به"
 
 	arr["ENGLISH","sort_targets_text_1"]=" 1) bssid       7) bssid (reverse)"
 	arr["SPANISH","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
@@ -170,6 +171,7 @@ function initialize_sort_targets_language_strings() {
 	arr["POLISH","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
 	arr["GERMAN","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
 	arr["TURKISH","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+	arr["ARABIC","sort_targets_text_1"]=" 1) bssid       7) bssid (\${cyan_color}\${pending_of_translation}\${normal_color} يعكس)"
 
 	arr["ENGLISH","sort_targets_text_2"]=" 2) channel     8) channel (reverse)"
 	arr["SPANISH","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
@@ -182,6 +184,7 @@ function initialize_sort_targets_language_strings() {
 	arr["POLISH","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
 	arr["GERMAN","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
 	arr["TURKISH","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+	arr["ARABIC","sort_targets_text_2"]=" 2) channel     8) channel (\${cyan_color}\${pending_of_translation}\${normal_color} يعكس)"
 
 	arr["ENGLISH","sort_targets_text_3"]=" 3) power       9) power (reverse)"
 	arr["SPANISH","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
@@ -194,6 +197,7 @@ function initialize_sort_targets_language_strings() {
 	arr["POLISH","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
 	arr["GERMAN","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
 	arr["TURKISH","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+	arr["ARABIC","sort_targets_text_3"]=" 3) power       9) power (\${cyan_color}\${pending_of_translation}\${normal_color} يعكس)"
 
 	arr["ENGLISH","sort_targets_text_4"]=" 4) essid      10) essid (reverse)"
 	arr["SPANISH","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
@@ -206,6 +210,7 @@ function initialize_sort_targets_language_strings() {
 	arr["POLISH","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
 	arr["GERMAN","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
 	arr["TURKISH","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+	arr["ARABIC","sort_targets_text_4"]=" 4) essid      10) essid (\${cyan_color}\${pending_of_translation}\${normal_color} يعكس)"
 
 	arr["ENGLISH","sort_targets_text_5"]=" 5) encryption 11) encryption (reverse)"
 	arr["SPANISH","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
@@ -218,6 +223,7 @@ function initialize_sort_targets_language_strings() {
 	arr["POLISH","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
 	arr["GERMAN","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
 	arr["TURKISH","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+	arr["ARABIC","sort_targets_text_5"]=" 5) encryption 11) encryption (\${cyan_color}\${pending_of_translation}\${normal_color} يعكس)"
 
 	arr["ENGLISH","sort_targets_text_6"]=" 6) default    12) default (reverse)"
 	arr["SPANISH","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} inverso)"
@@ -230,6 +236,7 @@ function initialize_sort_targets_language_strings() {
 	arr["POLISH","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} odwrotność)"
 	arr["GERMAN","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} umgekehrt)"
 	arr["TURKISH","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} ters)"
+	arr["ARABIC","sort_targets_text_6"]=" 6) default    12) default (\${cyan_color}\${pending_of_translation}\${normal_color} يعكس)"
 
 	arr["ENGLISH","sort_targets_text_7"]="Invalid choice!"
 	arr["SPANISH","sort_targets_text_7"]="\${pending_of_translation} ¡Elección inválida!"
@@ -242,6 +249,7 @@ function initialize_sort_targets_language_strings() {
 	arr["POLISH","sort_targets_text_7"]="\${pending_of_translation} Nieprawidłowy wybór!"
 	arr["GERMAN","sort_targets_text_7"]="\${pending_of_translation} Ungültige Wahl!"
 	arr["TURKISH","sort_targets_text_7"]="\${pending_of_translation} Geçersiz seçim!"
+	arr["ARABIC","sort_targets_text_7"]="\${pending_of_translation} اختيار غير صحيح"
 }
 
 initialize_sort_targets_language_strings
