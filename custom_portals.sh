@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.1.5
+# Version:    0.1.6
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -18,7 +18,7 @@ plugin_author="KeyofBlueS"
 
 plugin_enabled=1
 
-plugin_minimum_ag_affected_version="10.20"
+plugin_minimum_ag_affected_version="10.30"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
@@ -143,6 +143,7 @@ function custom_portals_override_set_captive_portal_page() {
 		echo -e "echo '<!DOCTYPE html>'"
 		echo -e "echo '<html>'"
 		echo -e "echo -e '\t<head>'"
+		echo -e "echo -e '\t\t<meta name=\"viewport\" content=\"width=device-width\"/>'"
 		echo -e "echo -e '\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>'"
 		echo -e "echo -e '\t\t<title>${et_misc_texts[${captive_portal_language},15]}</title>'"
 		echo -e "echo -e '\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"${cssfile}\"/>'"
@@ -206,7 +207,6 @@ function custom_portals_override_set_captive_portal_page() {
 				password=$(printf '%b' "${password//%/\\x}")
 				password=${password//[]}
 			fi
-
 			if [[ ${#password} -ge 8 ]] && [[ ${#password} -le 63 ]]; then
 		EOF
 	else
@@ -219,7 +219,6 @@ function custom_portals_override_set_captive_portal_page() {
 				password=$(printf '%b' "${password//%/\\x}")
 				password=${password//[*&\/?<>]}
 			fi
-
 			if [[ ${#password} -ge 8 ]] && [[ ${#password} -le 63 ]]; then
 		EOF
 	fi
@@ -375,6 +374,7 @@ function initialize_custom_portals_language_strings() {
 	arr["POLISH","custom_portals_text_0"]="\${pending_of_translation} Wybierz swój portal dla niewoli:"
 	arr["GERMAN","custom_portals_text_0"]="\${pending_of_translation} Wählen Sie Ihr Captive-Portal aus:"
 	arr["TURKISH","custom_portals_text_0"]="\${pending_of_translation} Esir portalınızı seçin:"
+	arr["ARABIC","custom_portals_text_0"]="\${pending_of_translation} حدد البوابة المقيدة الخاصة بك"
 
 	arr["ENGLISH","custom_portals_text_1"]=" 1) Standard"
 	arr["SPANISH","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Estándar"
@@ -387,6 +387,7 @@ function initialize_custom_portals_language_strings() {
 	arr["POLISH","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Standard"
 	arr["GERMAN","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Standard"
 	arr["TURKISH","custom_portals_text_1"]=" 1) \${cyan_color}\${pending_of_translation}\${normal_color} Standart"
+	arr["ARABIC","custom_portals_text_1"]="\${pending_of_translation} 1) اساسي"
 
 	arr["ENGLISH","custom_portals_text_2"]="No custom captive portals found!"
 	arr["SPANISH","custom_portals_text_2"]="\${pending_of_translation} ¡No se encontraron portales cautivos personalizados!"
@@ -399,6 +400,7 @@ function initialize_custom_portals_language_strings() {
 	arr["POLISH","custom_portals_text_2"]="\${pending_of_translation} Nie znaleziono niestandardowych portali typu captive!"
 	arr["GERMAN","custom_portals_text_2"]="\${pending_of_translation} Keine benutzerdefinierten Captive-Portale gefunden!"
 	arr["TURKISH","custom_portals_text_2"]="\${pending_of_translation} Özel sabit portal bulunamadı!"
+	arr["ARABIC","custom_portals_text_2"]="\${pending_of_translation} لم يتم العثور على بوابات مقيدة مخصصة"
 
 	arr["ENGLISH","custom_portals_text_3"]="Please put Your custom captive portal files in:"
 	arr["SPANISH","custom_portals_text_3"]="\${pending_of_translation} Coloque sus archivos de portal cautivo personalizados en:"
@@ -411,6 +413,7 @@ function initialize_custom_portals_language_strings() {
 	arr["POLISH","custom_portals_text_3"]="\${pending_of_translation} Proszę umieścić własne niestandardowe pliki portalu w:"
 	arr["GERMAN","custom_portals_text_3"]="\${pending_of_translation} Bitte legen Sie Ihre benutzerdefinierten Captive-Portal-Dateien in:"
 	arr["TURKISH","custom_portals_text_3"]="\${pending_of_translation} Lütfen özel esir portal dosyalarınızı buraya yerleştirin:"
+	arr["ARABIC","custom_portals_text_3"]="\${pending_of_translation} يرجى وضع ملفات المدخل المقيدة المخصصة الخاصة بك في"
 
 	arr["ENGLISH","custom_portals_text_4"]="Invalid captive portal was chosen!"
 	arr["SPANISH","custom_portals_text_4"]="\${pending_of_translation} ¡Se eligió el portal cautivo no válido!"
@@ -423,6 +426,7 @@ function initialize_custom_portals_language_strings() {
 	arr["POLISH","custom_portals_text_4"]="\${pending_of_translation} Wybrano nieprawidłowy portal dla niewoli!"
 	arr["GERMAN","custom_portals_text_4"]="\${pending_of_translation} Es wurde ein ungültiges Captive-Portal ausgewählt!"
 	arr["TURKISH","custom_portals_text_4"]="\${pending_of_translation} Geçersiz esir portal seçildi!"
+	arr["ARABIC","custom_portals_text_4"]="\${pending_of_translation} تم اختيار بوابة مقيدة غير صالحة"
 
 	arr["ENGLISH","custom_portals_text_5"]="Captive portal choosen:"
 	arr["SPANISH","custom_portals_text_5"]="\${pending_of_translation} Portal cautivo elegido:"
@@ -435,6 +439,7 @@ function initialize_custom_portals_language_strings() {
 	arr["POLISH","custom_portals_text_5"]="\${pending_of_translation} Wybrany portal dla niewoli:"
 	arr["GERMAN","custom_portals_text_5"]="\${pending_of_translation} Captive Portal ausgewählt:"
 	arr["TURKISH","custom_portals_text_5"]="\${pending_of_translation} Seçilen esir portalı:"
+	arr["ARABIC","custom_portals_text_5"]="\${pending_of_translation} تم اختيار بوابة مقيدة"
 
 	arr["ENGLISH","custom_portals_text_6"]="WARNING: detection of passwords containing *&/?<> characters is ENABLED!"
 	arr["SPANISH","custom_portals_text_6"]="\${pending_of_translation} ADVERTENCIA: ¡la detección de contraseñas que contienen caracteres *&/?<> Está HABILITADA!"
@@ -447,6 +452,7 @@ function initialize_custom_portals_language_strings() {
 	arr["POLISH","custom_portals_text_6"]="\${pending_of_translation} OSTRZEŻENIE: wykrywanie haseł zawierających znaki *&/?<> Jest WŁĄCZONE!"
 	arr["GERMAN","custom_portals_text_6"]="\${pending_of_translation} WARNUNG: Die Erkennung von Passwörtern mit *&/?<> Zeichen ist AKTIVIERT!"
 	arr["TURKISH","custom_portals_text_6"]="\${pending_of_translation} UYARI: *&/?<> Karakterleri içeren şifrelerin tespiti ETKİN!"
+	arr["ARABIC","custom_portals_text_6"]="\${pending_of_translation} تحذير: تم تمكين اكتشاف كلمات المرور التي تحتوي على * & /؟ <> أحرف"
 }
 
 initialize_custom_portals_language_strings

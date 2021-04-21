@@ -2,7 +2,7 @@
 
 # Captured-Handshakes airgeddon plugin
 
-# Version:    0.1.9
+# Version:    0.1.10
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -18,7 +18,7 @@ plugin_author="KeyofBlueS"
 
 plugin_enabled=1
 
-plugin_minimum_ag_affected_version="10.20"
+plugin_minimum_ag_affected_version="10.30"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
@@ -304,6 +304,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["POLISH","captured_handshakes_text_0"]="\${pending_of_translation} Wybierz przechwycony plik uzgadniania:"
 	arr["GERMAN","captured_handshakes_text_0"]="\${pending_of_translation} Erfasste Handshake-Datei auswählen:"
 	arr["TURKISH","captured_handshakes_text_0"]="\${pending_of_translation} Yakalanan el sıkışma dosyasını seçin:"
+	arr["ARABIC","captured_handshakes_text_0"]="\${pending_of_translation} :حدد ملف المصافحة الملتقطة"
 
 	arr["ENGLISH","captured_handshakes_text_1"]="  1) Manually enter the path of the captured handshake file"
 	arr["SPANISH","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Ingrese manualmente la ruta del archivo de handshake capturado"
@@ -316,6 +317,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["POLISH","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Ręcznie wprowadź ścieżkę przechwyconego pliku uzgadniania"
 	arr["GERMAN","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Geben Sie den Pfad der erfassten Handshake-Datei manuell ein"
 	arr["TURKISH","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} Yakalanan el sıkışma dosyasının yolunu el ile girin"
+	arr["ARABIC","captured_handshakes_text_1"]="  1) \${cyan_color}\${pending_of_translation}\${normal_color} أدخل مسار ملف المصافحة الملتقط يدويًا"
 
 	arr["ENGLISH","captured_handshakes_text_2"]="(*) Likely"
 	arr["SPANISH","captured_handshakes_text_2"]="\${pending_of_translation} (*) Probable"
@@ -328,6 +330,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["POLISH","captured_handshakes_text_2"]="\${pending_of_translation} (*) Prawdopodobne"
 	arr["GERMAN","captured_handshakes_text_2"]="\${pending_of_translation} (*) Wahrscheinlich"
 	arr["TURKISH","captured_handshakes_text_2"]="\${pending_of_translation} (*) muhtemelen"
+	arr["ARABIC","captured_handshakes_text_2"]="\${pending_of_translation} (*) مرجح"
 
 	arr["ENGLISH","captured_handshakes_text_3"]="(!) Unsupported file format"
 	arr["SPANISH","captured_handshakes_text_3"]="\${pending_of_translation} (!) Formato de archivo no soportado"
@@ -340,6 +343,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["POLISH","captured_handshakes_text_3"]="\${pending_of_translation} (!) Niewspierany format pliku"
 	arr["GERMAN","captured_handshakes_text_3"]="\${pending_of_translation} (!) Nicht unterstütztes Dateiformat"
 	arr["TURKISH","captured_handshakes_text_3"]="\${pending_of_translation} (!) Desteklenmeyen dosya formatı"
+	arr["ARABIC","captured_handshakes_text_3"]="\${pending_of_translation} (!) تنسيق ملف غير معتمد"
 
 	arr["ENGLISH","captured_handshakes_text_4"]="No captured handshake file for the selected network found!"
 	arr["SPANISH","captured_handshakes_text_4"]="\${pending_of_translation} ¡No se encontró ningún archivo de handshake capturado para la red seleccionada!"
@@ -352,6 +356,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["POLISH","captured_handshakes_text_4"]="\${pending_of_translation} Nie znaleziono przechwyconego pliku uzgadniania dla wybranej sieci!"
 	arr["GERMAN","captured_handshakes_text_4"]="\${pending_of_translation} Keine erfasste Handshake-Datei für das ausgewählte Netzwerk gefunden!"
 	arr["TURKISH","captured_handshakes_text_4"]="\${pending_of_translation} Seçilen ağ için yakalanan el sıkışma dosyası bulunamadı!"
+	arr["ARABIC","captured_handshakes_text_4"]="\${pending_of_translation} لم يتم العثور على ملف مصافحة تم التقاطه للشبكة المحددة"
 
 	arr["ENGLISH","captured_handshakes_text_5"]="No captured handshake file found!"
 	arr["SPANISH","captured_handshakes_text_5"]="\${pending_of_translation} ¡No se encontraron handshake capturados!"
@@ -364,6 +369,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["POLISH","captured_handshakes_text_5"]="\${pending_of_translation} Nie znaleziono przechwyconego pliku uzgadniania!"
 	arr["GERMAN","captured_handshakes_text_5"]="\${pending_of_translation} Keine erfasste Handshake-Datei gefunden!"
 	arr["TURKISH","captured_handshakes_text_5"]="\${pending_of_translation} Yakalanan bir el sıkışma dosyası bulunamadı!"
+	arr["ARABIC","captured_handshakes_text_5"]="\${pending_of_translation} لم يتم العثور على ملف مصافحة تم التقاطه"
 
 	arr["ENGLISH","captured_handshakes_text_6"]="Please put Your captured handshakes files in:"
 	arr["SPANISH","captured_handshakes_text_6"]="\${pending_of_translation} Ponga sus archivos de handshake capturados en:"
@@ -376,6 +382,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["POLISH","captured_handshakes_text_6"]="\${pending_of_translation} Umieść swoje przechwycone pliki uzgadniania:"
 	arr["GERMAN","captured_handshakes_text_6"]="\${pending_of_translation} Bitte legen Sie Ihre erfassten Handshakes-Dateien ein:"
 	arr["TURKISH","captured_handshakes_text_6"]="\${pending_of_translation} Lütfen Yakalanan tokalaşma dosyalarınızı buraya yerleştirin:"
+	arr["ARABIC","captured_handshakes_text_6"]="\${pending_of_translation} يرجى وضع ملفات المصافحة التي تم التقاطها"
 
 	arr["ENGLISH","captured_handshakes_text_7"]="Invalid captured handshake was chosen!"
 	arr["SPANISH","captured_handshakes_text_7"]="\${pending_of_translation} Se eligió un handshake capturado no válido!"
@@ -388,6 +395,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["POLISH","captured_handshakes_text_7"]="\${pending_of_translation} Wybrano nieprawidłowy ujęty uścisk dłoni!"
 	arr["GERMAN","captured_handshakes_text_7"]="\${pending_of_translation} Es wurde ein ungültiger erfasster handshake ausgewählt!"
 	arr["TURKISH","captured_handshakes_text_7"]="\${pending_of_translation} Geçersiz yakalanan el sıkışma seçildi!"
+	arr["ARABIC","captured_handshakes_text_7"]="\${pending_of_translation} تم اختيار مصافحة تم التقاطها غير صالحة"
 
 	arr["ENGLISH","captured_handshakes_text_8"]="Captured handshake choosen:"
 	arr["SPANISH","captured_handshakes_text_8"]="\${pending_of_translation} Handshake capturado elegido:"
@@ -400,6 +408,7 @@ function initialize_captured_handshakes_language_strings() {
 	arr["POLISH","captured_handshakes_text_8"]="\${pending_of_translation} Wybrany uścisk dłoni:"
 	arr["GERMAN","captured_handshakes_text_8"]="\${pending_of_translation} Erfasster Handshake ausgewählt:"
 	arr["TURKISH","captured_handshakes_text_8"]="\${pending_of_translation} Yakalanan el sıkışma seçildi:"
+	arr["ARABIC","captured_handshakes_text_8"]="\${pending_of_translation} تم اختيار المصافحة الملتقطة"
 }
 
 check_captured_handshakes_dir

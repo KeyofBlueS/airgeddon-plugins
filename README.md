@@ -7,25 +7,25 @@ Plugins for airgeddon https://github.com/v1s1t0r1sh3r3/airgeddon
 
 ### DESCRIPTION
 
-* **Captured-Handshakes (minimum airgeddon version: 10.20):**
+* **Captured-Handshakes (minimum airgeddon version: 10.30):**
 Put Your captured handshakes files in a directory of Your choice, then choose one of them inside airgeddon itself. Default path is plugins/captured_handshakes/HANDSHAKES_FILES
 
-* **Custom-Portals (minimum airgeddon version: 10.20):**
+* **Custom-Portals (minimum airgeddon version: 10.30):**
 Put Your custom captive portal files in a directory of Your choice. Default path is plugins/custom_portals/PORTAL_FOLDER/PORTAL_FILES.
 You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon itself. Take a look at custom_portals/OpenWRT_EXAMPLE for a custom captive portal example.
 
 * **Default-Save-Path:**
 Set the default directory for saving files. Default is plugins/output/
 
-* **Regdomain (minimum airgeddon version: 10.20):**
+* **Regdomain (minimum airgeddon version: 10.30):**
 Set regulatory domain to affect the availability of wireless channels and txpower.
 You can check the country codes database i.e. here https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb.git/tree/db.txt
 
-* **Smart-Twin (minimum airgeddon version: 10.20):**
+* **Smart-Twin (minimum airgeddon version: 10.30):**
 Enable/Disable Evil Twin Access Point based on Target availability. Only work in Pursuit Mode.
 Disabling Evil Twin Access Point when the target network is no longer present (e.g. the attacked router is turned off) is useful to make the attack less suspicious.
 
-* **Sort-Targets (minimum airgeddon version: 10.20):**
+* **Sort-Targets (minimum airgeddon version: 10.30):**
 When selecting targets, sort them by one of the following value:
 bssid, channel, power, essid, encryption, default
 

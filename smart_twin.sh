@@ -2,7 +2,7 @@
 
 # Smart-Twin airgeddon plugin
 
-# Version:    0.0.2
+# Version:    0.0.3
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -18,7 +18,7 @@ plugin_author="KeyofBlueS"
 
 plugin_enabled=1
 
-plugin_minimum_ag_affected_version="10.20"
+plugin_minimum_ag_affected_version="10.30"
 plugin_maximum_ag_affected_version=""
 plugin_distros_supported=("*")
 
@@ -167,6 +167,7 @@ function initialize_smart_twin_language_strings() {
 	arr["POLISH","smart_twin_text_0"]="\${pending_of_translation} Wykryto cel, włączony Zły Twin AP"
 	arr["GERMAN","smart_twin_text_0"]="\${pending_of_translation} Ziel erkannt, Evil Twin AP aktiviert"
 	arr["TURKISH","smart_twin_text_0"]="\${pending_of_translation} Hedef tespit edildi, Evil Twin AP etkin"
+	arr["ARABIC","smart_twin_text_0"]="\${pending_of_translation} تم الكشف عن الهدف ، وتم تمكين نقطة الوصول المزدوجة الشريرة"
 
 	arr["ENGLISH","smart_twin_text_1"]="Error enabling Evil Twin AP"
 	arr["SPANISH","smart_twin_text_1"]="\${pending_of_translation} Error al habilitar Evil Twin AP"
@@ -179,6 +180,7 @@ function initialize_smart_twin_language_strings() {
 	arr["POLISH","smart_twin_text_1"]="\${pending_of_translation} Błąd podczas włączania Evil Twin AP"
 	arr["GERMAN","smart_twin_text_1"]="\${pending_of_translation} Fehler beim Aktivieren des Evil Twin AP"
 	arr["TURKISH","smart_twin_text_1"]="\${pending_of_translation} Evil Twin AP etkinleştirilirken hata oluştu"
+	arr["ARABIC","smart_twin_text_1"]="\${pending_of_translation} خطأ في تمكين نقطة الوصول المزدوجة الشريرة"
 
 	arr["ENGLISH","smart_twin_text_2"]="Target not detected, Evil Twin AP disabled"
 	arr["SPANISH","smart_twin_text_2"]="\${pending_of_translation} Objetivo no detectado, Evil Twin AP deshabilitado"
@@ -191,6 +193,7 @@ function initialize_smart_twin_language_strings() {
 	arr["POLISH","smart_twin_text_2"]="\${pending_of_translation} Nie wykryto celu, Złe Podwójne AP wyłączone"
 	arr["GERMAN","smart_twin_text_2"]="\${pending_of_translation} Ziel nicht erkannt, Evil Twin AP deaktiviert"
 	arr["TURKISH","smart_twin_text_2"]="\${pending_of_translation} Hedef tespit edilmedi, Evil Twin AP devre dışı"
+	arr["ARABIC","smart_twin_text_2"]="\${pending_of_translation} الهدف لم يتم اكتشافه ، تم تعطيل نقطة الوصول المزدوجة الشريرة"
 
 	arr["ENGLISH","smart_twin_text_3"]="Error disabling Evil Twin AP"
 	arr["SPANISH","smart_twin_text_3"]="\${pending_of_translation} Error al deshabilitar Evil Twin AP"
@@ -203,6 +206,7 @@ function initialize_smart_twin_language_strings() {
 	arr["POLISH","smart_twin_text_3"]="\${pending_of_translation} Błąd podczas wyłączania złego podwójnego AP"
 	arr["GERMAN","smart_twin_text_3"]="\${pending_of_translation} Fehler beim Deaktivieren des Evil Twin AP"
 	arr["TURKISH","smart_twin_text_3"]="\${pending_of_translation} Evil Twin AP devre dışı bırakılırken hata oluştu"
+	arr["ARABIC","smart_twin_text_3"]="\${pending_of_translation} خطأ في تعطيل نقطة الوصول المزدوجة الشريرة"
 }
 
 initialize_smart_twin_language_strings
