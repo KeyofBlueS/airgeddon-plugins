@@ -33,6 +33,9 @@ regulatory_domain=BZ
 ############################## END OF USER CONFIG SECTION ##############################
 
 #Custom function to set regulatory domain
+function get_regulatory_domain() {
+	current_regulatory_domain="$(iw reg get | grep -m1 "country" | awk -F' ' '{print $2}' | awk -F':' '{print $1}')"
+}
 function set_regulatory_domain() {
 
 	debug_print
@@ -40,7 +43,7 @@ function set_regulatory_domain() {
 	language_strings "${language}" "regdomain_text_0" "blue"
 
 	#Get current regulatory domain
-	current_regulatory_domain="$(iw reg get | grep "country" | awk -F' ' '{print $2}' | awk -F':' '{print $1}')"
+	get_regulatory_domain
 	if [ -z "${regulatory_domain}" ]; then
 		regulatory_domain="${current_regulatory_domain}"
 	fi
@@ -63,7 +66,7 @@ function set_regulatory_domain() {
 			done
 		fi
 		#Check regulatory domain again
-		current_regulatory_domain="$(iw reg get | grep "country" | awk -F' ' '{print $2}' | awk -F':' '{print $1}')"
+		get_regulatory_domain
 		if [ "${current_regulatory_domain}" != "${regulatory_domain}" ]; then
 			language_strings "${language}" "regdomain_text_1" "red"
 		fi
