@@ -2,7 +2,7 @@
 
 # Regdomain airgeddon plugin
 
-# Version:    0.1.1
+# Version:    0.1.2
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -40,7 +40,7 @@ function set_regulatory_domain() {
 	language_strings "${language}" "regdomain_text_0" "blue"
 
 	#Get current regulatory domain
-	current_regulatory_domain="$(iw reg get | grep "country" | awk -F' ' '{print $2}' | awk -F':' '{print $1}')"
+	current_regulatory_domain="$(iw reg get | grep -xA1 'global' | uniq | grep 'country' | awk -F' ' '{print $2}' | awk -F':' '{print $1}')"
 	if [ -z "${regulatory_domain}" ]; then
 		regulatory_domain="${current_regulatory_domain}"
 	fi
@@ -48,7 +48,7 @@ function set_regulatory_domain() {
 	#Check regulatory domain
 	if [ "${current_regulatory_domain}" != "${regulatory_domain}" ]; then
 		#Terminate WiFi connections as they could prevent to set regulatory domain
-		active_connections="$(nmcli -t -f uuid,type connection show --active | grep "wireless" | awk -F":" '{print $1}')"
+		active_connections="$(nmcli -t -f uuid,type connection show --active | grep 'wireless' | awk -F":" '{print $1}')"
 		if [ -n "${active_connections}" ]; then
 			for active_connection in ${active_connections}; do
 				nmcli con down uuid "${active_connection}" > /dev/null 2>&1
@@ -63,13 +63,22 @@ function set_regulatory_domain() {
 			done
 		fi
 		#Check regulatory domain again
-		current_regulatory_domain="$(iw reg get | grep "country" | awk -F' ' '{print $2}' | awk -F':' '{print $1}')"
+		current_regulatory_domain="$(iw reg get | grep -xA1 'global' | uniq | grep 'country' | awk -F' ' '{print $2}' | awk -F':' '{print $1}')"
 		if [ "${current_regulatory_domain}" != "${regulatory_domain}" ]; then
 			language_strings "${language}" "regdomain_text_1" "red"
 		fi
 	fi
-	language_strings "${language}" "regdomain_text_2" "yellow"
-	echo_yellow "${current_regulatory_domain}"
+
+	#Check for problematic interfaces
+	current_regulatory_domains="$(iw reg get | grep -B1 'country')"
+
+	language_strings "${language}" "regdomain_text_3" "yellow"
+	if [ "$(echo "${current_regulatory_domains}" | grep 'country' | wc -l)" -gt '1' ]; then
+		language_strings "${language}" "regdomain_text_2" "yellow"
+		echo_yellow "${current_regulatory_domains}"
+	else
+		echo_yellow "${current_regulatory_domain}"
+	fi
 	echo
 }
 
@@ -149,18 +158,31 @@ function initialize_regdomain_language_strings() {
 	arr["TURKISH","regdomain_text_1"]="\${pending_of_translation} Yasal alan adı ayarlanırken hata oluştu!"
 	arr["ARABIC","regdomain_text_1"]="\${pending_of_translation} خطأ أثناء تعيين المجال التنظيمي"
 
-	arr["ENGLISH","regdomain_text_2"]="Current regulatory domain is:"
-	arr["SPANISH","regdomain_text_2"]="\${pending_of_translation} El dominio regulador actual es:"
-	arr["FRENCH","regdomain_text_2"]="\${pending_of_translation} Le domaine réglementaire actuel est:"
-	arr["CATALAN","regdomain_text_2"]="\${pending_of_translation} El domini regulador actual és:"
-	arr["PORTUGUESE","regdomain_text_2"]="\${pending_of_translation} O domínio regulatório atual é:"
-	arr["RUSSIAN","regdomain_text_2"]="\${pending_of_translation} Текущий регуляторный домен:"
-	arr["GREEK","regdomain_text_2"]="\${pending_of_translation} Ο τρέχων κανονιστικός τομέας είναι:"
-	arr["ITALIAN","regdomain_text_2"]="L'attuale regulatory domain è:"
-	arr["POLISH","regdomain_text_2"]="\${pending_of_translation} Obecna domena regulacyjna to:"
-	arr["GERMAN","regdomain_text_2"]="\${pending_of_translation} Aktuelle regulatorische Domäne ist:"
-	arr["TURKISH","regdomain_text_2"]="\${pending_of_translation} Mevcut yasal alan adı:"
-	arr["ARABIC","regdomain_text_2"]="\${pending_of_translation} المجال التنظيمي الحالي هو"
+	arr["ENGLISH","regdomain_text_2"]="WARNING one or more interfaces may not follow global regulatory domain"
+	arr["SPANISH","regdomain_text_2"]="\${pending_of_translation} ADVERTENCIA es posible que una o más interfaces no sigan el dominio regulatorio global"
+	arr["FRENCH","regdomain_text_2"]="\${pending_of_translation} AVERTISSEMENT une ou plusieurs interfaces peuvent ne pas suivre le domaine réglementaire mondial"
+	arr["CATALAN","regdomain_text_2"]="\${pending_of_translation} AVÍS Una o més interfícies pot no seguir el domini de la regulació global"
+	arr["PORTUGUESE","regdomain_text_2"]="\${pending_of_translation} AVISO uma ou mais interfaces podem não seguir o domínio regulatório global"
+	arr["RUSSIAN","regdomain_text_2"]="\${pending_of_translation} ПРЕДУПРЕЖДЕНИЕ: один или несколько интерфейсов могут не соответствовать глобальному нормативному домену."
+	arr["GREEK","regdomain_text_2"]="\${pending_of_translation} ΠΡΟΕΙΔΟΠΟΙΗΣΗ μία ή περισσότερες διεπαφές ενδέχεται να μην ακολουθούν τον παγκόσμιο ρυθμιστικό τομέα"
+	arr["ITALIAN","regdomain_text_2"]="ATTENZIONE una o più interfacce potrebbero non seguire il regulatory domain globale"
+	arr["POLISH","regdomain_text_2"]="\${pending_of_translation} OSTRZEŻENIE co najmniej jeden interfejs może nie być zgodny z globalną domeną regulacyjną"
+	arr["GERMAN","regdomain_text_2"]="\${pending_of_translation} WARNUNG eine oder mehrere Schnittstellen entsprechen möglicherweise nicht der globalen Regulierungsdomäne"
+	arr["TURKISH","regdomain_text_2"]="\${pending_of_translation} UYARI Bir veya daha fazla arabirim, küresel düzenleyici etki alanını takip etmeyebilir"
+	arr["ARABIC","regdomain_text_2"]="\${pending_of_translation} تحذير قد لا تتبع واجهة واحدة أو أكثر المجال التنظيمي العالمي"
+
+	arr["ENGLISH","regdomain_text_3"]="Current regulatory domain is:"
+	arr["SPANISH","regdomain_text_3"]="\${pending_of_translation} El dominio regulador actual es:"
+	arr["FRENCH","regdomain_text_3"]="\${pending_of_translation} Le domaine réglementaire actuel est:"
+	arr["CATALAN","regdomain_text_3"]="\${pending_of_translation} El domini regulador actual és:"
+	arr["PORTUGUESE","regdomain_text_3"]="\${pending_of_translation} O domínio regulatório atual é:"
+	arr["RUSSIAN","regdomain_text_3"]="\${pending_of_translation} Текущий регуляторный домен:"
+	arr["GREEK","regdomain_text_3"]="\${pending_of_translation} Ο τρέχων κανονιστικός τομέας είναι:"
+	arr["ITALIAN","regdomain_text_3"]="L'attuale regulatory domain è:"
+	arr["POLISH","regdomain_text_3"]="\${pending_of_translation} Obecna domena regulacyjna to:"
+	arr["GERMAN","regdomain_text_3"]="\${pending_of_translation} Aktuelle regulatorische Domäne ist:"
+	arr["TURKISH","regdomain_text_3"]="\${pending_of_translation} Mevcut yasal alan adı:"
+	arr["ARABIC","regdomain_text_3"]="\${pending_of_translation} المجال التنظيمي الحالي هو"
 }
 
 initialize_regdomain_language_strings
