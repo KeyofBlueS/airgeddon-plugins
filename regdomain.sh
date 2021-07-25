@@ -2,7 +2,7 @@
 
 # Regdomain airgeddon plugin
 
-# Version:    0.1.2
+# Version:    0.1.3
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -30,6 +30,10 @@ plugin_distros_supported=("*")
 # Example:
 regulatory_domain=BZ
 
+# Set to true to restore regulatory domain upon exit airgeddon, otherwise set to false
+# Example:
+restore_regulatory_domain=false
+
 ############################## END OF USER CONFIG SECTION ##############################
 
 #Custom function to set regulatory domain
@@ -37,12 +41,15 @@ function set_regulatory_domain() {
 
 	debug_print
 
-	language_strings "${language}" "regdomain_text_0" "blue"
-
 	#Get current regulatory domain
 	current_regulatory_domain="$(iw reg get | grep -xA1 'global' | uniq | grep 'country' | awk -F' ' '{print $2}' | awk -F':' '{print $1}')"
 	if [ -z "${regulatory_domain}" ]; then
 		regulatory_domain="${current_regulatory_domain}"
+	fi
+
+	#Store regulatory domain to restore it upon exit
+	if [ -z "${stored_regulatory_domain}" ]; then
+		stored_regulatory_domain="${current_regulatory_domain}"
 	fi
 
 	#Check regulatory domain
@@ -55,6 +62,8 @@ function set_regulatory_domain() {
 			done
 		fi
 		#Set regulatory domain
+		language_strings "${language}" "regdomain_text_0" "blue"
+
 		iw reg set "${regulatory_domain}" > /dev/null 2>&1
 		#Reconnect previously disconnected WiFi connections
 		if [ -n "${active_connections}" ]; then
@@ -127,6 +136,35 @@ function regdomain_override_set_mode_without_airmon() {
 	return 0
 }
 
+#Custom function to restore regulatory domain upon exit
+function restore_regulatory_domain() {
+
+	debug_print
+
+	language_strings "${language}" "regdomain_text_4" "multiline"
+	iw reg set "${stored_regulatory_domain}" > /dev/null 2>&1
+}
+
+#Prehook to restore regulatory domain upon exit
+function regdomain_prehook_exit_script_option() {
+
+	debug_print
+
+	if [ "${restore_regulatory_domain}" = 'true' ]; then
+		restore_regulatory_domain
+	fi
+}
+
+#Prehook to restore regulatory domain upon hardcore exit
+function regdomain_prehook_hardcore_exit() {
+
+	debug_print
+
+	if [ "${restore_regulatory_domain}" = 'true' ]; then
+		restore_regulatory_domain
+	fi
+}
+
 #Custom function. Create text messages to be used in regdomain plugin
 function initialize_regdomain_language_strings() {
 
@@ -183,6 +221,19 @@ function initialize_regdomain_language_strings() {
 	arr["GERMAN","regdomain_text_3"]="\${pending_of_translation} Aktuelle regulatorische Domäne ist:"
 	arr["TURKISH","regdomain_text_3"]="\${pending_of_translation} Mevcut yasal alan adı:"
 	arr["ARABIC","regdomain_text_3"]="\${pending_of_translation} المجال التنظيمي الحالي هو"
+
+	arr["ENGLISH","regdomain_text_4"]="Restoring regulatory domain"
+	arr["SPANISH","regdomain_text_4"]="\${pending_of_translation} Restaurando el dominio regulatorio"
+	arr["FRENCH","regdomain_text_4"]="\${pending_of_translation} Restauration du domaine réglementaire"
+	arr["CATALAN","regdomain_text_4"]="\${pending_of_translation} Restauració del domini normatiu"
+	arr["PORTUGUESE","regdomain_text_4"]="\${pending_of_translation} Restaurando domínio regulatório"
+	arr["RUSSIAN","regdomain_text_4"]="\${pending_of_translation} Восстановление нормативного домена"
+	arr["GREEK","regdomain_text_4"]="\${pending_of_translation} Επαναφορά ρυθμιστικού τομέα"
+	arr["ITALIAN","regdomain_text_4"]="Ripristino il regulatory domain"
+	arr["POLISH","regdomain_text_4"]="\${pending_of_translation} Przywracanie domeny regulacyjnej"
+	arr["GERMAN","regdomain_text_4"]="\${pending_of_translation} Wiederherstellung der Regulierungsdomäne"
+	arr["TURKISH","regdomain_text_4"]="\${pending_of_translation} Düzenleyici etki alanını geri yükleme"
+	arr["ARABIC","regdomain_text_4"]="\${pending_of_translation} استعادة المجال التنظيمي"
 }
 
 initialize_regdomain_language_strings
