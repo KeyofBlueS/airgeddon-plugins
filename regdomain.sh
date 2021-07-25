@@ -141,8 +141,10 @@ function restore_regulatory_domain() {
 
 	debug_print
 
-	language_strings "${language}" "regdomain_text_4" "multiline"
-	iw reg set "${stored_regulatory_domain}" > /dev/null 2>&1
+	if [ "${restore_regulatory_domain}" = 'true' ]; then
+		language_strings "${language}" "regdomain_text_4" "multiline"
+		iw reg set "${stored_regulatory_domain}" > /dev/null 2>&1
+	fi
 }
 
 #Prehook to restore regulatory domain upon exit
@@ -150,9 +152,7 @@ function regdomain_prehook_exit_script_option() {
 
 	debug_print
 
-	if [ "${restore_regulatory_domain}" = 'true' ]; then
-		restore_regulatory_domain
-	fi
+	restore_regulatory_domain
 }
 
 #Prehook to restore regulatory domain upon hardcore exit
@@ -160,9 +160,7 @@ function regdomain_prehook_hardcore_exit() {
 
 	debug_print
 
-	if [ "${restore_regulatory_domain}" = 'true' ]; then
-		restore_regulatory_domain
-	fi
+	restore_regulatory_domain
 }
 
 #Custom function. Create text messages to be used in regdomain plugin
