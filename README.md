@@ -27,7 +27,8 @@ Disabling Evil Twin Access Point when the target network is no longer present (e
 
 * **Sort-Targets (minimum airgeddon version: 10.30):**
 When selecting targets, sort them by one of the following value:
-bssid, channel, power, essid, encryption, default
+bssid, channel, power, clients, essid, encryption, default
+Also, this plug-in add the value "clients" (CLI) to the target selection list, so you can view the amount of clients connected to each Access Point. The more you leave the "Exploring for targets" window running, the more clients will be discovered.
 
 * **UI-Boost (maximum airgeddon version: 10.11):**
 Make a specifc language strings file instead of using the complete one, speeding up ui.
