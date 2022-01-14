@@ -44,3 +44,9 @@ body * {
 #showpass {
 	vertical-align: top;
 }
+
+@media screen (min-width: 1000px) {
+	.content {
+		width: 50%;
+	}
+}
