@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.1.7
+# Version:    0.1.8
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -29,14 +29,7 @@ plugin_distros_supported=("*")
 # Example:
 custom_portals_dir="${scriptfolder}${plugins_dir}custom_portals/"
 # You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon itself.
-# Including ESSID_HERE in the body of Your custom index file, will be replaced with the
-# essid of the target network.
-# Including TITLE_HERE in the body of Your custom index file, will be replaced with the
-# title in the chosen language. It's recommended to not customize title as, in my
-# experience, this will prevent clients to correctly detect a captive portal, so please
-# consider to use TITLE_HERE in order to set the default one, unless You know what You
-# are doing.
-# Take a look at custom_portals/OpenWRT_EXAMPLE for a custom captive portal example.
+# Take a look at custom_portals/<EXAMPLES> for custom captive portal examples.
 
 # *** WARNING ***
 # Enabling the detection of passwords containing *&/?<> characters is very dangerous as
@@ -140,6 +133,10 @@ function custom_portals_override_set_captive_portal_page() {
 		echo -e "\tdocument.location = \"${indexfile}\";"
 		echo -e "}\n"
 		} >> "${tmpdir}${webdir}${jsfile}"
+	else
+		check_ampersand "${et_misc_texts[${captive_portal_language},16]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},16]}*${captive_portal_text}*g" "${tmpdir}${webdir}${jsfile}"
+		sed -i "s#\${indexfile}#"${indexfile}"#g" "${tmpdir}${webdir}${jsfile}"
 	fi
 
 	if [[ ! -f "${tmpdir}${webdir}${indexfile}" ]]; then
@@ -156,7 +153,7 @@ function custom_portals_override_set_captive_portal_page() {
 		echo -e "echo -e '\t</head>'"
 		echo -e "echo -e '\t<body>'"
 		echo -e "echo -e '\t\t<div class=\"content\">'"
-		echo -e "echo -e '\t\t\t<form method=\"post\" id=\"loginform\" name=\"loginform\" action=\"check.htm\">'"
+		echo -e "echo -e '\t\t\t<form method=\"post\" id=\"loginform\" name=\"loginform\" action=\"${checkfile}\">'"
 		echo -e "echo -e '\t\t\t\t<div class=\"title\">'"
 		echo -e "echo -e '\t\t\t\t\t<p>${et_misc_texts[${captive_portal_language},9]}</p>'"
 		echo -e "echo -e '\t\t\t\t\t<span class=\"bold\">${essid//[\`\']/}</span>'"
@@ -174,7 +171,24 @@ function custom_portals_override_set_captive_portal_page() {
 		echo -e "exit 0"
 		} >> "${tmpdir}${webdir}${indexfile}"
 	else
-		if cat "${tmpdir}${webdir}${indexfile}" | grep -q "ESSID_HERE"; then
+		check_ampersand "${et_misc_texts[${captive_portal_language},15]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},15]}*${captive_portal_text}*g" "${tmpdir}${webdir}${indexfile}"
+		check_ampersand "${et_misc_texts[${captive_portal_language},9]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},9]}*${captive_portal_text}*g" "${tmpdir}${webdir}${indexfile}"
+		check_ampersand "${et_misc_texts[${captive_portal_language},10]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},10]}*${captive_portal_text}*g" "${tmpdir}${webdir}${indexfile}"
+		check_ampersand "${et_misc_texts[${captive_portal_language},11]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},11]}*${captive_portal_text}*g" "${tmpdir}${webdir}${indexfile}"
+		check_ampersand "${et_misc_texts[${captive_portal_language},12]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},12]}*${captive_portal_text}*g" "${tmpdir}${webdir}${indexfile}"
+		check_ampersand "${et_misc_texts[${captive_portal_language},13]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},13]}*${captive_portal_text}*g" "${tmpdir}${webdir}${indexfile}"
+		check_ampersand "${essid}"
+		sed -i "s#\${essid}#${captive_portal_text//[\`\']/}#g" "${tmpdir}${webdir}${indexfile}"
+		sed -i "s#\${cssfile}#"${cssfile}"#g" "${tmpdir}${webdir}${indexfile}"
+		sed -i "s#\${jsfile}#"${jsfile}"#g" "${tmpdir}${webdir}${indexfile}"
+		sed -i "s#\${checkfile}#"${checkfile}"#g" "${tmpdir}${webdir}${indexfile}"
+		if grep -q "ESSID_HERE" "${tmpdir}${webdir}${indexfile}"; then
 			if echo "${essid}" | grep -Fq "&"; then
 				essid=$(echo "${essid}" | sed -e 's/[\/&]/\\&/g')
 			fi
@@ -280,6 +294,26 @@ function custom_portals_override_set_captive_portal_page() {
 		EOF
 
 		exec 4>&-
+	else
+		check_ampersand "${et_misc_texts[${captive_portal_language},15]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},15]}*${captive_portal_text}*g" "${tmpdir}${webdir}${checkfile}"
+		check_ampersand "${et_misc_texts[${captive_portal_language},18]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},18]}*${captive_portal_text}*g" "${tmpdir}${webdir}${checkfile}"
+		check_ampersand "${et_misc_texts[${captive_portal_language},17]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},17]}*${captive_portal_text}*g" "${tmpdir}${webdir}${checkfile}"
+		check_ampersand "${et_misc_texts[${captive_portal_language},26]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},26]}*${captive_portal_text}*g" "${tmpdir}${webdir}${checkfile}"
+		check_ampersand "${et_misc_texts[${captive_portal_language},14]}"
+		sed -i "s*\${et_misc_texts\[\${captive_portal_language},14]}*${captive_portal_text}*g" "${tmpdir}${webdir}${checkfile}"
+		sed -i "s#\${cssfile}#"${cssfile}"#g" "${tmpdir}${webdir}${checkfile}"
+		sed -i "s#\${jsfile}#"${jsfile}"#g" "${tmpdir}${webdir}${checkfile}"
+		sed -i "s#\${bssid}#"${bssid}"#g" "${tmpdir}${webdir}${checkfile}"
+		sed -i "s#\${tmpdir}#"${tmpdir}"#g" "${tmpdir}${webdir}${checkfile}"
+		sed -i "s#\${webdir}#"${webdir}"#g" "${tmpdir}${webdir}${checkfile}"
+		sed -i "s#\${currentpassfile}#"${currentpassfile}"#g" "${tmpdir}${webdir}${checkfile}"
+		sed -i "s#\${et_handshake}#"${et_handshake}"#g" "${tmpdir}${webdir}${checkfile}"
+		sed -i "s#\${et_successfile}#"${et_successfile}"#g" "${tmpdir}${webdir}${checkfile}"
+		sed -i "s#\${attemptsfile}#"${attemptsfile}"#g" "${tmpdir}${webdir}${checkfile}"
 	fi
 
 	if [[ "${custom_portals_full_password}" = "true" ]]; then
@@ -293,6 +327,16 @@ function custom_portals_override_set_captive_portal_page() {
 	fi
 
 	sleep 3
+}
+
+#Chek for ampersand to escepe
+function check_ampersand() {
+
+	captive_portal_text="${1}"
+
+	if echo "${captive_portal_text}" | grep -Fq "&"; then
+		captive_portal_text=$(echo "${captive_portal_text}" | sed -e 's/[\/&]/\\&/g')
+	fi
 }
 
 #Custom captive portal selection menu
