@@ -12,7 +12,7 @@ Put Your captured handshakes files in a directory of Your choice, then choose on
 
 * **Custom-Portals (minimum airgeddon version: 10.30):**
 Put Your custom captive portal files in a directory of Your choice. Default path is plugins/custom_portals/PORTAL_FOLDER/PORTAL_FILES.
-You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon itself. Take a look at custom_portals/OpenWRT_EXAMPLE for a custom captive portal example.
+You can have multiple PORTAL_FOLDER, then choose one of them inside airgeddon itself. Take a look at custom_portals/<EXAMPLES> for a custom captive portal example.
 
 * **Default-Save-Path:**
 Set the default directory for saving files. Default is plugins/output/
