@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.1.8
+# Version:    0.2.0
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -35,8 +35,7 @@ custom_portals_dir="${scriptfolder}${plugins_dir}custom_portals/"
 # Enabling the detection of passwords containing *&/?<> characters is very dangerous as
 # injections can be done on captive portal page and the hacker could be hacked by some
 # kind of command injection on the captive portal page.
-# Set to "true" AT YOUR OWN RISK!
-custom_portals_full_password=false
+# ACTIVATE AT YOUR OWN RISK!
 
 ############################## END OF USER CONFIG SECTION ##############################
 
@@ -48,11 +47,6 @@ function custom_portals_override_set_captive_portal_page() {
 	if [[ "${copy_custom_portal}" -eq "1" ]]; then
 		cp -r "${custom_portals_dir}${custom_portal}/"* "${tmpdir}${webdir}"
 		unset copy_custom_portal
-	fi
-
-	if [[ "${custom_portals_full_password}" = "true" ]]; then
-		echo
-		language_strings "${language}" "custom_portals_text_6" "red"
 	fi
 
 	if [[ ! -f "${tmpdir}${webdir}${cssfile}" ]]; then
@@ -316,7 +310,10 @@ function custom_portals_override_set_captive_portal_page() {
 		sed -i "s#\${attemptsfile}#"${attemptsfile}"#g" "${tmpdir}${webdir}${checkfile}"
 	fi
 
+
 	if [[ "${custom_portals_full_password}" = "true" ]]; then
+		echo
+		language_strings "${language}" "custom_portals_text_11" "red"
 		if grep -Fq 'password=${password//[*&\/?<>]}' "${tmpdir}${webdir}${checkfile}"; then
 			lines_to_delete="$(grep -Fn 'password=${password//[*&\/?<>]}' "${tmpdir}${webdir}${checkfile}" | awk -F':' '{print $1}')"
 			for line_to_delete in ${lines_to_delete}; do
@@ -324,6 +321,7 @@ function custom_portals_override_set_captive_portal_page() {
 			done
 			sed -i "${lines_to_delete_argument}" "${tmpdir}${webdir}${checkfile}"
 		fi
+		unset custom_portals_full_password
 	fi
 
 	sleep 3
@@ -402,9 +400,46 @@ function custom_portals_prehook_set_captive_portal_language() {
 		custom_portal="$(sed -n "${selected_custom_portal}"p "${tmpdir}ag.custom_portals.txt")"
 	fi
 	rm "${tmpdir}ag.custom_portals.txt"
-	language_strings "${language}" "custom_portals_text_5" "yellow"
-	echo_yellow "${custom_portal}"
+
+	while true; do
+		clear
+		language_strings "${language}" 293 "title"
+		print_iface_selected
+		print_et_target_vars
+		print_iface_internet_selected
+		echo
+		language_strings "${language}" "custom_portals_text_5" "yellow"
+		echo_yellow "${custom_portal}"
+		echo 
+		language_strings "${language}" "custom_portals_text_6" "green"
+		language_strings "${language}" "custom_portals_text_7" "red"
+		print_simple_separator
+		language_strings "${language}" "custom_portals_text_8" "green"
+		language_strings "${language}" "custom_portals_text_9" "red"
+		print_simple_separator
+		read -rp "> " full_password
+
+		case $full_password in
+			1)
+				custom_portals_full_password='false'
+				language_strings "${language}" "custom_portals_text_10" "green"
+				break
+			;;
+			2)
+				custom_portals_full_password='true'
+				language_strings "${language}" "custom_portals_text_11" "red"
+				break
+			;;
+			*)
+				echo
+				language_strings "${language}" "custom_portals_text_12" "red"
+				language_strings "${language}" 115 "read"
+			;;
+		esac
+	done
+
 	language_strings "${language}" 115 "read"
+
 }
 
 #Custom function. Create text messages to be used in custom portals plugin
@@ -491,18 +526,96 @@ function initialize_custom_portals_language_strings() {
 	arr["TURKISH","custom_portals_text_5"]="\${pending_of_translation} Seçilen esir portalı:"
 	arr["ARABIC","custom_portals_text_5"]="\${pending_of_translation} تم اختيار بوابة مقيدة"
 
-	arr["ENGLISH","custom_portals_text_6"]="WARNING: detection of passwords containing *&/?<> characters is ENABLED!"
-	arr["SPANISH","custom_portals_text_6"]="\${pending_of_translation} ADVERTENCIA: ¡la detección de contraseñas que contienen caracteres *&/?<> Está HABILITADA!"
-	arr["FRENCH","custom_portals_text_6"]="\${pending_of_translation} ATTENTION: la détection des mots de passe contenant des caractères *&/?<> Est ACTIVÉE!"
-	arr["CATALAN","custom_portals_text_6"]="\${pending_of_translation} ADVERTIMENT: la detecció de contrasenyes que contenen caràcters *&/?<> Està habilitada!"
-	arr["PORTUGUESE","custom_portals_text_6"]="\${pending_of_translation} AVISO: a detecção de senhas que contêm caracteres *&/?<> Está ATIVADA!"
-	arr["RUSSIAN","custom_portals_text_6"]="\${pending_of_translation} ВНИМАНИЕ: обнаружение паролей, содержащих символы *&/?<> ВКЛЮЧЕНО!"
-	arr["GREEK","custom_portals_text_6"]="\${pending_of_translation} ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ανίχνευση κωδικών πρόσβασης που περιέχουν χαρακτήρες *&/?<> ΕΝΕΡΓΟΠΟΙΗΘΕΙ!"
-	arr["ITALIAN","custom_portals_text_6"]="ATTENZIONE: il rilevamento di password contenenti caratteri *&/?<> È ABILITATO!"
-	arr["POLISH","custom_portals_text_6"]="\${pending_of_translation} OSTRZEŻENIE: wykrywanie haseł zawierających znaki *&/?<> Jest WŁĄCZONE!"
-	arr["GERMAN","custom_portals_text_6"]="\${pending_of_translation} WARNUNG: Die Erkennung von Passwörtern mit *&/?<> Zeichen ist AKTIVIERT!"
-	arr["TURKISH","custom_portals_text_6"]="\${pending_of_translation} UYARI: *&/?<> Karakterleri içeren şifrelerin tespiti ETKİN!"
-	arr["ARABIC","custom_portals_text_6"]="\${pending_of_translation} تحذير: تم تمكين اكتشاف كلمات المرور التي تحتوي على * & /؟ <> أحرف"
+	arr["ENGLISH","custom_portals_text_6"]="Do you want to enable the detection of passwords containing *&/?<> characters?"
+	arr["SPANISH","custom_portals_text_6"]="\${pending_of_translation} ¿Desea habilitar la detección de contraseñas que contengan caracteres *&/?<> ?"
+	arr["FRENCH","custom_portals_text_6"]="\${pending_of_translation} Voulez-vous activer la détection des mots de passe contenant des caractères *&/?<> ?"
+	arr["CATALAN","custom_portals_text_6"]="\${pending_of_translation} Voleu habilitar la detecció de contrasenyes que contenen caràcters *&/?<> ?"
+	arr["PORTUGUESE","custom_portals_text_6"]="\${pending_of_translation} Deseja habilitar a detecção de senhas contendo caracteres *&/?<> ?"
+	arr["RUSSIAN","custom_portals_text_6"]="\${pending_of_translation} Вы хотите включить обнаружение паролей, содержащих символы *&/?<> ?"
+	arr["GREEK","custom_portals_text_6"]="\${pending_of_translation} Θέλετε να ενεργοποιήσετε τον εντοπισμό κωδικών πρόσβασης που περιέχουν χαρακτήρες *&/?<>"
+	arr["ITALIAN","custom_portals_text_6"]="Vuoi abilitare il rilevamento delle password contenenti i caratteri *&/?<> ?"
+	arr["POLISH","custom_portals_text_6"]="\${pending_of_translation} Czy chcesz włączyć wykrywanie haseł zawierających znaki *&/?<> ?"
+	arr["GERMAN","custom_portals_text_6"]="\${pending_of_translation} Möchten Sie die Erkennung von Passwörtern aktivieren, die *&/?<> Zeichen enthalten?"
+	arr["TURKISH","custom_portals_text_6"]="\${pending_of_translation} *&/?<> karakterlerini içeren parolaların algılanmasını etkinleştirmek istiyor musunuz?"
+	arr["ARABIC","custom_portals_text_6"]="\${pending_of_translation} هل تريد تمكين اكتشاف كلمات المرور التي تحتوي على أحرف * & /؟ <>؟"
+
+	arr["ENGLISH","custom_portals_text_7"]="WARNING: Enabling the detection of passwords containing *&/?<> characters is very dangerous as injections can be done on captive portal page and the hacker could be hacked by some kind of command injection on the captive portal page. ACTIVATE AT YOUR OWN RISK!"
+	arr["SPANISH","custom_portals_text_7"]="\${pending_of_translation} ADVERTENCIA: Habilitar la detección de contraseñas que contienen caracteres *&/?<> es muy peligroso ya que se pueden realizar inyecciones en la página del portal cautivo y el hacker podría ser pirateado mediante algún tipo de inyección de comando en la página del portal cautivo. ¡ACTÍVALO BAJO TU PROPIO RIESGO!"
+	arr["FRENCH","custom_portals_text_7"]="\${pending_of_translation} AVERTISSEMENT: Activer la détection des mots de passe contenant des caractères *&/?<> est très dangereux car des injections peuvent être effectuées sur la page du portail captif et le pirate pourrait être piraté par une sorte d'injection de commande sur la page du portail captif. ACTIVEZ À VOS PROPRES RISQUES!"
+	arr["CATALAN","custom_portals_text_7"]="\${pending_of_translation} ADVERTÈNCIA: Habilitar la detecció de contrasenyes que contenen caràcters *&/?<> és molt perillós, ja que les injeccions es poden fer a la pàgina del portal captiu i el pirata informàtic podria ser piratejat mitjançant algun tipus d'injecció d'ordres a la pàgina del portal captiu. ACTIVA AL TEU PROPI RISC!"
+	arr["PORTUGUESE","custom_portals_text_7"]="\${pending_of_translation} AVISO: Habilitar a detecção de senhas contendo caracteres *&/?<> é muito perigoso, pois as injeções podem ser feitas na página do portal cativo e o hacker pode ser invadido por algum tipo de injeção de comando na página do portal cativo. ATIVE POR SUA CONTA E RISCO!"
+	arr["RUSSIAN","custom_portals_text_7"]="\${pending_of_translation} ПРЕДУПРЕЖДЕНИЕ: Включение обнаружения паролей, содержащих символы *&/?<> , очень опасно, так как инъекции могут быть выполнены на странице авторизованного портала, и хакер может быть взломан путем внедрения какой-либо команды на странице авторизованного портала. АКТИВИРУЙТЕ НА СВОЙ РИСК!"
+	arr["GREEK","custom_portals_text_7"]="\${pending_of_translation} ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ενεργοποίηση της ανίχνευσης κωδικών πρόσβασης που περιέχουν χαρακτήρες *&/?<> είναι πολύ επικίνδυνη, καθώς μπορούν να γίνουν εγχύσεις στη σελίδα της πύλης και ο χάκερ μπορεί να παραβιαστεί με κάποιου είδους ένεση εντολών στη σελίδα της πύλης αποκλειστικής χρήσης. ΕΝΕΡΓΟΠΟΙΗΣΤΕ ΜΕ ΔΙΚΗ ΣΑΣ ΕΥΘΥΝΗ!"
+	arr["ITALIAN","custom_portals_text_7"]="ATTENZIONE: abilitare il rilevamento di password contenenti i caratteri *&/?<> è molto pericoloso in quanto delle injection possono essere eseguite sulla pagina del captive portal e l'hacker potrebbe essere violato da una sorta di command injection nella pagina del captive portal. ATTIVALA A TUO RISCHIO!"
+	arr["POLISH","custom_portals_text_7"]="\${pending_of_translation} OSTRZEŻENIE: Włączenie wykrywania haseł zawierających znaki *&/?<> jest bardzo niebezpieczne, ponieważ wstrzyknięcia można wykonać na stronie portalu przechwytującego, a haker może zostać zhakowany przez wstrzyknięcie polecenia na stronie portalu przechwytującego. AKTYWUJ NA WŁASNE RYZYKO!"
+	arr["GERMAN","custom_portals_text_7"]="\${pending_of_translation} WARNUNG: Das Aktivieren der Erkennung von Passwörtern mit *&/?<> Zeichen ist sehr gefährlich, da Injektionen auf der Seite des Captive-Portals vorgenommen werden können und der Hacker durch eine Art Befehlsinjektion auf der Seite des Captive-Portals gehackt werden könnte. AKTIVIERUNG AUF EIGENES RISIKO!"
+	arr["TURKISH","custom_portals_text_7"]="\${pending_of_translation} UYARI: *&/?<> karakterlerini içeren şifrelerin tespitini etkinleştirmek çok tehlikelidir çünkü girişler sabit portal sayfasında yapılabilir ve bilgisayar korsanı, sabit portal sayfasında bir tür komut enjeksiyonu ile hacklenebilir. RİSK SİZE AİT ETKİNLEŞTİRİN!"
+	arr["ARABIC","custom_portals_text_7"]="\${pending_of_translation} تحذير: يعد تمكين اكتشاف كلمات المرور التي تحتوي على أحرف * & /؟ نشط على مسؤوليتك الخاصة!"
+
+	arr["ENGLISH","custom_portals_text_8"]=" 1) No"
+	arr["SPANISH","custom_portals_text_8"]="\${pending_of_translation} 1) No"
+	arr["FRENCH","custom_portals_text_8"]="\${pending_of_translation} 1) Non"
+	arr["CATALAN","custom_portals_text_8"]="\${pending_of_translation} 1) No"
+	arr["PORTUGUESE","custom_portals_text_8"]="\${pending_of_translation} 1) Não"
+	arr["RUSSIAN","custom_portals_text_8"]="\${pending_of_translation} 1) Нет"
+	arr["GREEK","custom_portals_text_8"]="\${pending_of_translation} 1) Οχι"
+	arr["ITALIAN","custom_portals_text_8"]=" 1) No"
+	arr["POLISH","custom_portals_text_8"]="\${pending_of_translation} 1) Nie"
+	arr["GERMAN","custom_portals_text_8"]="\${pending_of_translation} 1) Nein"
+	arr["TURKISH","custom_portals_text_8"]="\${pending_of_translation} 1) Numara"
+	arr["ARABIC","custom_portals_text_8"]="\${pending_of_translation} 1) رقم"
+
+	arr["ENGLISH","custom_portals_text_9"]=" 2) Yes"
+	arr["SPANISH","custom_portals_text_9"]="\${pending_of_translation} 2) Sí"
+	arr["FRENCH","custom_portals_text_9"]="\${pending_of_translation} 2) Oui"
+	arr["CATALAN","custom_portals_text_9"]="\${pending_of_translation} 2) Sí"
+	arr["PORTUGUESE","custom_portals_text_9"]="\${pending_of_translation} 2) Sim"
+	arr["RUSSIAN","custom_portals_text_9"]="\${pending_of_translation} 2) да"
+	arr["GREEK","custom_portals_text_9"]="\${pending_of_translation} 2) Ναί"
+	arr["ITALIAN","custom_portals_text_9"]=" 2) Si"
+	arr["POLISH","custom_portals_text_9"]="\${pending_of_translation} 2) Tak"
+	arr["GERMAN","custom_portals_text_9"]="\${pending_of_translation} 2) Ja"
+	arr["TURKISH","custom_portals_text_9"]="\${pending_of_translation} 2) Evet"
+	arr["ARABIC","custom_portals_text_9"]="\${pending_of_translation} 2) نعم"
+
+	arr["ENGLISH","custom_portals_text_10"]="Detection of passwords containing *&/?<> characters is DISABLED"
+	arr["SPANISH","custom_portals_text_10"]="\${pending_of_translation} La detección de contraseñas que contienen *&/?<> caracteres está DESACTIVADA"
+	arr["FRENCH","custom_portals_text_10"]="\${pending_of_translation} La détection des mots de passe contenant les caractères *&/?<> est DÉSACTIVÉE"
+	arr["CATALAN","custom_portals_text_10"]="\${pending_of_translation} La detecció de contrasenyes que contenen caràcters *&/?<> està DESACTIVADA"
+	arr["PORTUGUESE","custom_portals_text_10"]="\${pending_of_translation} A detecção de senhas contendo caracteres *&/?<> está DESATIVADA"
+	arr["RUSSIAN","custom_portals_text_10"]="\${pending_of_translation} ОТКЛЮЧЕНО обнаружение паролей, содержащих символы *&/?<>"
+	arr["GREEK","custom_portals_text_10"]="\${pending_of_translation} Ο εντοπισμός κωδικών πρόσβασης που περιέχουν χαρακτήρες *&/?<> είναι ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟΣ"
+	arr["ITALIAN","custom_portals_text_10"]="Il rilevamento delle password contenenti i caratteri *&/?<> è DISATTIVATO"
+	arr["POLISH","custom_portals_text_10"]="\${pending_of_translation} Wykrywanie haseł zawierających znaki *&/?<> jest WYŁĄCZONE"
+	arr["GERMAN","custom_portals_text_10"]="\${pending_of_translation} Die Erkennung von Passwörtern mit *&/?<> Zeichen ist DEAKTIVIERT"
+	arr["TURKISH","custom_portals_text_10"]="\${pending_of_translation} *&/?<> karakterlerini içeren şifrelerin algılanması DEVRE DIŞI"
+	arr["ARABIC","custom_portals_text_10"]="\${pending_of_translation} تم تعطيل الكشف عن كلمات المرور التي تحتوي على * & /؟"
+
+	arr["ENGLISH","custom_portals_text_11"]="WARNING: detection of passwords containing *&/?<> characters is ENABLED!"
+	arr["SPANISH","custom_portals_text_11"]="\${pending_of_translation} ADVERTENCIA: ¡la detección de contraseñas que contienen caracteres *&/?<> Está HABILITADA!"
+	arr["FRENCH","custom_portals_text_11"]="\${pending_of_translation} ATTENTION: la détection des mots de passe contenant des caractères *&/?<> Est ACTIVÉE!"
+	arr["CATALAN","custom_portals_text_11"]="\${pending_of_translation} ADVERTIMENT: la detecció de contrasenyes que contenen caràcters *&/?<> Està habilitada!"
+	arr["PORTUGUESE","custom_portals_text_11"]="\${pending_of_translation} AVISO: a detecção de senhas que contêm caracteres *&/?<> Está ATIVADA!"
+	arr["RUSSIAN","custom_portals_text_11"]="\${pending_of_translation} ВНИМАНИЕ: обнаружение паролей, содержащих символы *&/?<> ВКЛЮЧЕНО!"
+	arr["GREEK","custom_portals_text_11"]="\${pending_of_translation} ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Η ανίχνευση κωδικών πρόσβασης που περιέχουν χαρακτήρες *&/?<> ΕΝΕΡΓΟΠΟΙΗΘΕΙ!"
+	arr["ITALIAN","custom_portals_text_11"]="ATTENZIONE: il rilevamento di password contenenti caratteri *&/?<> È ABILITATO!"
+	arr["POLISH","custom_portals_text_11"]="\${pending_of_translation} OSTRZEŻENIE: wykrywanie haseł zawierających znaki *&/?<> Jest WŁĄCZONE!"
+	arr["GERMAN","custom_portals_text_11"]="\${pending_of_translation} WARNUNG: Die Erkennung von Passwörtern mit *&/?<> Zeichen ist AKTIVIERT!"
+	arr["TURKISH","custom_portals_text_11"]="\${pending_of_translation} UYARI: *&/?<> Karakterleri içeren şifrelerin tespiti ETKİN!"
+	arr["ARABIC","custom_portals_text_11"]="\${pending_of_translation} تحذير: تم تمكين اكتشاف كلمات المرور التي تحتوي على * & /؟ <> أحرف"
+
+	arr["ENGLISH","custom_portals_text_12"]="Invalid choice!"
+	arr["SPANISH","custom_portals_text_12"]="\${pending_of_translation} ¡Elección inválida!"
+	arr["FRENCH","custom_portals_text_12"]="\${pending_of_translation} Choix invalide!"
+	arr["CATALAN","custom_portals_text_12"]="\${pending_of_translation} Elecció no vàlida!"
+	arr["PORTUGUESE","custom_portals_text_12"]="\${pending_of_translation} Escolha inválida!"
+	arr["RUSSIAN","custom_portals_text_12"]="\${pending_of_translation} Неверный выбор!"
+	arr["GREEK","custom_portals_text_12"]="\${pending_of_translation} Μη έγκυρη επιλογή!"
+	arr["ITALIAN","custom_portals_text_12"]="Scelta non valida!"
+	arr["POLISH","custom_portals_text_12"]="\${pending_of_translation} Nieprawidłowy wybór!"
+	arr["GERMAN","custom_portals_text_12"]="\${pending_of_translation} Ungültige Wahl!"
+	arr["TURKISH","custom_portals_text_12"]="\${pending_of_translation} Geçersiz seçim!"
+	arr["ARABIC","custom_portals_text_12"]="\${pending_of_translation} اختيار غير صحيح"
 }
 
 initialize_custom_portals_language_strings
