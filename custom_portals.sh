@@ -2,7 +2,7 @@
 
 # Custom-Portals airgeddon plugin
 
-# Version:    0.2.0
+# Version:    0.2.1
 # Author:     KeyofBlueS
 # Repository: https://github.com/KeyofBlueS/airgeddon-plugins
 # License:    GNU General Public License v3.0, https://opensource.org/licenses/GPL-3.0
@@ -315,6 +315,7 @@ function custom_portals_override_set_captive_portal_page() {
 		echo
 		language_strings "${language}" "custom_portals_text_11" "red"
 		if grep -Fq 'password=${password//[*&\/?<>]}' "${tmpdir}${webdir}${checkfile}"; then
+  			unset lines_to_delete_argument
 			lines_to_delete="$(grep -Fn 'password=${password//[*&\/?<>]}' "${tmpdir}${webdir}${checkfile}" | awk -F':' '{print $1}')"
 			for line_to_delete in ${lines_to_delete}; do
 				lines_to_delete_argument="${lines_to_delete_argument}${line_to_delete}d;"
